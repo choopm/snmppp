@@ -1,0 +1,7 @@
+// SNMPpp: https://sourceforge.net/p/snmppp/
+// SNMPpp project uses the MIT license. See LICENSE for details.
+// Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
+
+This project contains some C++ helper classes for SNMP.  Parts of these classes may have been written specifically to help interface to the open source project net-snmp.
+
+
