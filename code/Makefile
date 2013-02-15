@@ -3,7 +3,7 @@
 # Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
 
-LIBSNMPPPVER=$(shell head -1 VERSION)-$(shell echo gitdescribe)
+LIBSNMPPPVER=$(shell git describe --long)
 
 CPPOBJS=		src/OID.o	\
 		src/SNMPpp.o

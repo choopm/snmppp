@@ -6,5 +6,5 @@
 
 #ifndef LIBSNMPPPVER
 // (note: the following line gets auto-updated by the build process)
-#define LIBSNMPPPVER "0.0.1-gitdescribe"
+#define LIBSNMPPPVER "0.0.1-0-gaaf5a2b"
 #endif
