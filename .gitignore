@@ -1,0 +1,10 @@
+*.d
+*.o
+*.out
+
+.kdev4
+SNMPpp.kdev4
+
+libsnmppp.a
+libsnmppp.so
+

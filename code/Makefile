@@ -11,11 +11,11 @@ CPPOBJS=		src/OID.o	\
 LIBS=		-lsnmp
 
 # Debugging:
-CXXFLAGS	=	-pthread -fPIC -Wall -Werror -Iinclude -O0 -fno-omit-frame-pointer -ggdb -DDEBUG
+CXXFLAGS=	-fPIC -Wall -Werror -Iinclude -O0 -fno-omit-frame-pointer -ggdb -DDEBUG
 # Profiling:
-#CXXFLAGS=	-pthread -fPIC -Wall -Werror -Iinclude/SNMPpp -O3 -fno-omit-frame-pointer -ggdb
+#CXXFLAGS=	-fPIC -Wall -Werror -Iinclude/SNMPpp -O3 -fno-omit-frame-pointer -ggdb
 # Normal builds:
-#CXXFLAGS=	-pthread -fPIC -Wall -Werror -Iinclude/SNMPpp -O3
+#CXXFLAGS=	-fPIC -Wall -Werror -Iinclude/SNMPpp -O3
 
 
 .PHONY: all
