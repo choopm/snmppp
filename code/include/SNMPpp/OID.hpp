@@ -6,7 +6,7 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
+#include <ostream>
 
 
 namespace SNMPpp

@@ -2,6 +2,49 @@
 // SNMPpp project uses the MIT license. See LICENSE for details.
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-This project contains some C++ helper classes for SNMP.  Parts of these classes may have been written specifically to help interface to the open source project net-snmp.
+==SUMMARY==
+
+This project contains some C++ helper classes for SNMP.  A Large parts of these classes and helper functions have also been written specifically to help interface to the open source project net-snmp (https://sourceforge.net/projects/net-snmp/).
+
+==GETTING STARTED==
+
+Quick guide on getting started with SNMP++:
+
+	- download dependencies (e.g., "sudo apt-get install libsnmp-dev ..."; see "installing_snmp_ubuntu.txt")
+	- download SNMP++ (e.g., "git clone git://git.code.sf.net/p/snmppp snmppp")
+	- cd snmppp/code/
+	- make
+
+==DIRECTORIES==
+
+The code you likely want to build and/or link against is in the following two directories:
+
+	- code/src/*.cpp
+	- include/SNMPpp/*.hpp
+
+I have not (yet) set this up to package as an easy-to-install .deb, though that is one of my goals.  In the meantime, I did create these directories so the code can be easily incorporated into an existing project, or development environment.
+
+One additional directory to point out is a series of test cases and example code which can be easily referenced to get started:
+
+	- examples/*.cpp
+
+==NET-SNMP==
+
+Personally, I found working with net-snmp strangely difficult as I tend to get lost in the various APIs, or confused by the unfamiliar (to me!) SNMP terminology.  This is probably 100% my own fault due to me not having found the right net-snmp "getting started" documentation.  Please keep this in mind as it means some of the SNMP++ code may be doing the wrong thing for you, or may not be doing it in an efficient manner.  Let me know if you run into issues, or if you have patches to contribute!
+
+One of the most important things to highlight is the difference between the old "Traditional API" for net-snmp API, and the newer "Single API".
+
+The "Traditional API" is not thread-friendly, while the newer "Single API" can be used in both single-threaded and multi-threaded applications.  For this reason, SNMP++ uses the "Single API".  More details on this can be found here:  http://www.net-snmp.org/docs/README.thread.html
+
+The "Single API" typically has functions that start with "snmp_sess_".  For example:
+
+	TRADITIONAL					SINGLE API
+	snmp_sess_init()				snmp_sess_init()
+	snmp_open()					snmp_sess_open()
+	snmp_send()					snmp_sess_send()
+	snmp_read()					snmp_sess_read()
+	snmp_error()					snmp_sess_error()
 
 
+Stéphane Charette <stephanecharette@gmail.com>
+2013-Feb-15.

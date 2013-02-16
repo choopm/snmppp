@@ -6,34 +6,34 @@ The SNMP++ project is not about installing or running SNMP, but as a basic requi
 
 These are my own SNMP setup notes (February 2013); use them as-is, or as a starting reference:
 
-- install Ubuntu 12.10 64-bit in a VM
-- sudo apt-get install snmp libsnmp-dev snmpd snmp-mibs-downloader
-- edit /etc/snmp/snmp.conf and comment out the empty "mibs :" line
-- run this command to test it:    snmpwalk -c public -v 2c 127.0.0.1 .1
+	- install Ubuntu 12.10 64-bit in a VM
+	- sudo apt-get install snmp libsnmp-dev snmpd snmp-mibs-downloader
+	- edit /etc/snmp/snmp.conf and comment out the empty "mibs :" line
+	- run this command to test it:    snmpwalk -c public -v 2c 127.0.0.1 .1
 
 The default snmpd configuration file forces snmpd to listen on 127.0.0.1.  To open it up to all interfaces:
 
-- edit /etc/snmp/snmpd.conf
-- look for this line:  agentAddress udp:127.0.0.1:161
-- change it like this: agentAddress udp:161,tcp:161
-- restart the server:  sudo service snmpd restart
-- run this command to test it:    snmpwalk -c public -v 2c 192.168.x.x .1
+	- edit /etc/snmp/snmpd.conf
+	- look for this line:  agentAddress udp:127.0.0.1:161
+	- change it like this: agentAddress udp:161,tcp:161
+	- restart the server:  sudo service snmpd restart
+	- run this command to test it:    snmpwalk -c public -v 2c 192.168.x.x .1
 (Obviously use the correct IP address.)
 
 The default snmpd configuration file only provides a very small subset of the SNMP MIB tree.  This is controlled using views, where different users from different source addresses can be shown a different amount of information.  To enable the full MIB tree from SNMP requests on 127.0.0.1:
 
-- edit /etc/snmp/snmpd.conf
-- look for this line:    #rocommunity public localhost
-- uncomment it:          rocommunity public localhost
-- restart the server:  sudo service snmpd restart
-- run this command to test it:    snmpwalk -c public -v 2c 127.0.0.1 .1
-- you should now see several thousand lines of output
-- to see the numeric OIDs:        snmpwalk -c public -v 2c -On 127.0.0.1 .1
-- to see the short name:          snmpwalk -c public -v 2c -OS 127.0.0.1 .1
-- to see the full name:           snmpwalk -c public -v 2c -Ou 127.0.0.1 .1
+	- edit /etc/snmp/snmpd.conf
+	- look for this line:    #rocommunity public localhost
+	- uncomment it:          rocommunity public localhost
+	- restart the server:  sudo service snmpd restart
+	- run this command to test it:    snmpwalk -c public -v 2c 127.0.0.1 .1
+	- you should now see several thousand lines of output
+	- to see the numeric OIDs:        snmpwalk -c public -v 2c -On 127.0.0.1 .1
+	- to see the short name:          snmpwalk -c public -v 2c -OS 127.0.0.1 .1
+	- to see the full name:           snmpwalk -c public -v 2c -Ou 127.0.0.1 .1
 
 Obviously there is much more that can be configured with snmpd.conf, some of which has important security implications.  I strongly suggest you read through the man page for snmpd.conf to ensure snmpd isn't left wide open with a common default community string.
 
+
 Stéphane Charette <stephanecharette@gmail.com>
 2013-Feb-13.
-

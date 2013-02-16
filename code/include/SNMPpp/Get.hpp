@@ -4,7 +4,13 @@
 
 #pragma once
 
-#include <SNMPpp/Version.hpp>
-#include <SNMPpp/OID.hpp>
 #include <SNMPpp/net-snmppp.hpp>
-#include <SNMPpp/Get.hpp>
+#include <SNMPpp/OID.hpp>
+
+
+namespace SNMPpp
+{
+	// C++ helper for some of the common net-snmp "GET" actions,
+	// such as SNMP_MSG_GET, SNMP_MSG_GETNEXT, SNMP_MSG_GETBULK
+	void get( snmp_session *session, const OID &oid );
+};

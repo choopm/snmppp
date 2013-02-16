@@ -5,8 +5,10 @@
 
 LIBSNMPPPVER=$(shell git describe --long)
 
-CPPOBJS=		src/OID.o	\
-		src/SNMPpp.o
+CPPOBJS=		src/Get.o	\
+		src/net-snmppp.o	\
+		src/OID.o	\
+		src/SNMPpp.o	
 
 LIBS=		-lsnmp
 

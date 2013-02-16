@@ -2,13 +2,12 @@
 // SNMPpp project uses the MIT license. See LICENSE for details.
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-#include <iostream>
-#include <SNMPpp/OID.hpp>
+#include <SNMPpp/Get.hpp>
+//#include <net-snmp/library/snmp_api.h>
+//#include <stdexcept>
 
 
-int main( int argc, char *argv[] )
+void SNMPpp::get( snmp_session *session, const OID &oid )
 {
-	std::cout << "Test some of the OID functionality." << std::endl;
-
-	return 0;
+	return;
 }
