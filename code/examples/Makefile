@@ -4,10 +4,12 @@
 
 
 CPPOBJS=		01_oid.o		\
-		02_sessions.o
+		02_sessions.o	\
+		03_get.o
 
 EXAMPLES=	01_oid.out	\
-		02_sessions.out
+		02_sessions.out	\
+		03_get.out
 
 CXXFLAGS	=	-ggdb -O0 -Wall -rdynamic -I../include
 

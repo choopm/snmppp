@@ -52,6 +52,18 @@ SNMPpp::OID::OID( const SNMPpp::OID::ECommon &location )
 }
 
 
+SNMPpp::OID::OID( const unsigned long *l, const size_t len )
+{
+	v.reserve( len );
+	for ( size_t idx = 0; idx < len; idx ++ )
+	{
+		v.push_back( l[idx] );
+	}
+
+	return;
+}
+
+
 SNMPpp::OID::operator std::string( void ) const
 {
 	// convert the OID to a text string, such as:  .0.1.2.3.4
@@ -66,6 +78,20 @@ SNMPpp::OID::operator std::string( void ) const
 }
 
 
+SNMPpp::OID::operator const unsigned long *( void ) const
+{
+	// net-snmp uses "unsigned long *" as OIDs, so this operator makes it easy
+	// and convenient to convert a C++ "OID" to a net-snmp "oid *".
+
+	if ( empty() )
+	{
+		return NULL;
+	}
+
+	return &v[0];
+}
+
+
 SNMPpp::OID &SNMPpp::OID::clear( void )
 {
 	v.clear();
@@ -74,7 +100,7 @@ SNMPpp::OID &SNMPpp::OID::clear( void )
 }
 
 
-SNMPpp::OID SNMPpp::OID::operator+( const unsigned int i ) const
+SNMPpp::OID SNMPpp::OID::operator+( const unsigned long l ) const
 {
 	// For example:
 	//
@@ -82,20 +108,20 @@ SNMPpp::OID SNMPpp::OID::operator+( const unsigned int i ) const
 	//		SNMPpp::OID oid2 = oid1 + 5;
 
 	OID newOid( *this );
-	newOid.v.push_back( i );
+	newOid.v.push_back( l );
 
 	return newOid;
 }
 
 
-SNMPpp::OID &SNMPpp::OID::operator+=( const unsigned int i )
+SNMPpp::OID &SNMPpp::OID::operator+=( const unsigned long l )
 {
 	// For example:
 	//
 	//		SNMPpp::OID oid( ".1.2.3.4" );
 	//		oid += 5;
 
-	v.push_back( i );
+	v.push_back( l );
 
 	return *this;
 }
@@ -267,9 +293,9 @@ bool SNMPpp::OID::isImmediateParentOf( const SNMPpp::OID &rhs ) const
 }
 
 
-std::ostream &operator<<( std::ostream &os, const SNMPpp::OID &oid )
+std::ostream &operator<<( std::ostream &os, const SNMPpp::OID &o )
 {
-	os << std::string( oid );
+	os << o.str();
 
 	return os;
 }

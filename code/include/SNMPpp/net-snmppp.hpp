@@ -4,9 +4,13 @@
 
 #pragma once
 
+// All net-snmp includes needed by SNMP++ are included here:
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/config_api.h>
-#include <SNMPpp/OID.hpp>
+#include <net-snmp/pdu_api.h>
+// That's it.  No other SNMP++ source files should have to include any net-snmp headers.
+
+#include <string>
 
 
 namespace SNMPpp
