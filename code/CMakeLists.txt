@@ -17,9 +17,9 @@ set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_CFLAGS} -O0 -ggdb" )
 #add_definitions( -DNDEBUG )
 #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_CFLAGS} -O3" )
 
-set ( SNMPpp_VERSION_MAJOR 0 )
-set ( SNMPpp_VERSION_MINOR 1 )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-show-option -Wall -Werror -Wshadow -Wformat=2 -Winit-self -Wwrite-strings" )
 include_directories ( BEFORE include )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-show-option -Wall -Werror -Wshadow -Wformat=2 -Winit-self -Wwrite-strings" )
+set ( SNMPP_VERSION_NUMBER "0.0.1" )
+configure_file (	"${CMAKE_HOME_DIRECTORY}/include/SNMPpp/Version.hpp.in" "${CMAKE_HOME_DIRECTORY}/include/SNMPpp/Version.hpp" @ONLY )
 
 subdirs ( src examples )

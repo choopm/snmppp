@@ -1,9 +1,9 @@
 *.d
 *.o
 *.out
-
+*.kdev4
 .kdev4
-SNMPpp.kdev4
 
 code/build
+code/include/SNMPpp/Version.hpp
 
