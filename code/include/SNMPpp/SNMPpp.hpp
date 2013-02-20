@@ -4,7 +4,10 @@
 
 #pragma once
 
+// include all of the SNMP++ #include files in the
+// correct order so cyclic dependencies are avoided
 #include <SNMPpp/Version.hpp>
-#include <SNMPpp/OID.hpp>
 #include <SNMPpp/net-snmppp.hpp>
+#include <SNMPpp/OID.hpp>
+#include <SNMPpp/PDU.hpp>
 #include <SNMPpp/Get.hpp>

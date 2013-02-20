@@ -4,9 +4,11 @@
 
 #pragma once
 
+#include <map>
+#include <string>
 #include <SNMPpp/net-snmppp.hpp>
 #include <SNMPpp/OID.hpp>
-#include <map>
+#include <SNMPpp/PDU.hpp>
 
 
 namespace SNMPpp

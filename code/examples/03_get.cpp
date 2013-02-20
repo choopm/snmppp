@@ -4,7 +4,6 @@
 
 #include <assert.h>
 #include <iostream>
-#include <SNMPpp/net-snmppp.hpp>
 #include <SNMPpp/Get.hpp>
 
 

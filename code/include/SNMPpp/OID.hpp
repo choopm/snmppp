@@ -36,8 +36,8 @@ namespace SNMPpp
 
 			// initialize using a text string with the familiar numeric value:
 			//		OID oid( ".1.3.6.1.4" );
-			OID( const char * const str );
-			OID( const std::string &str );
+			OID( const char * const s );
+			OID( const std::string &s );
 
 			// initialize using one of the common SNMP OID locations
 			//		OID oid( SNMPpp::OID::kInternet ); // .1.3.6
