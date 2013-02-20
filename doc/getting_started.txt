@@ -10,9 +10,12 @@ This project contains some C++ helper classes for SNMP.  A Large parts of these 
 
 Quick guide on getting started with SNMP++:
 
-	- download dependencies (e.g., "sudo apt-get install libsnmp-dev ..."; see "installing_snmp_ubuntu.txt")
+	- download dependencies (e.g., "sudo apt-get install cmake libsnmp-dev ..."; see "installing_snmp_ubuntu.txt")
 	- download SNMP++ (e.g., "git clone git://git.code.sf.net/p/snmppp snmppp")
 	- cd snmppp/code/
+	- mkdir build
+	- cd build
+	- cmake ..
 	- make
 
 ==DIRECTORIES==
@@ -47,4 +50,4 @@ The "Single API" typically has functions that start with "snmp_sess_".  For exam
 
 
 Stéphane Charette <stephanecharette@gmail.com>
-2013-Feb-15.
+2013-Feb-19.
