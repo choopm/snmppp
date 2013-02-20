@@ -6,5 +6,5 @@
 
 #ifndef LIBSNMPPPVER
 // (note: the following line gets auto-updated by the build process)
-#define LIBSNMPPPVER "0.0.1-2-ge4e041e"
+#define LIBSNMPPPVER "0.0.1-3-gcb3b344"
 #endif

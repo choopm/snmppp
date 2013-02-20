@@ -28,17 +28,17 @@ SNMPpp::OID::OID( const SNMPpp::OID &oid )
 }
 
 
-SNMPpp::OID::OID( const char * const str )
+SNMPpp::OID::OID( const char * const s )
 {
-	set( str );
+	set( s );
 
 	return;
 }
 
 
-SNMPpp::OID::OID( const std::string &str )
+SNMPpp::OID::OID( const std::string &s )
 {
-	set( str );
+	set( s );
 
 	return;
 }
@@ -52,12 +52,12 @@ SNMPpp::OID::OID( const SNMPpp::OID::ECommon &location )
 }
 
 
-SNMPpp::OID::OID( const unsigned long *l, const size_t len )
+SNMPpp::OID::OID( const unsigned long *array, const size_t length )
 {
-	v.reserve( len );
-	for ( size_t idx = 0; idx < len; idx ++ )
+	v.reserve( length );
+	for ( size_t idx = 0; idx < length; idx ++ )
 	{
-		v.push_back( l[idx] );
+		v.push_back( array[idx] );
 	}
 
 	return;
@@ -127,7 +127,7 @@ SNMPpp::OID &SNMPpp::OID::operator+=( const unsigned long l )
 }
 
 
-SNMPpp::OID SNMPpp::OID::operator+( const std::string &str ) const
+SNMPpp::OID SNMPpp::OID::operator+( const std::string &s ) const
 {
 	// For example:
 	//
@@ -140,17 +140,17 @@ SNMPpp::OID SNMPpp::OID::operator+( const std::string &str ) const
 	while ( pos < std::string::npos )
 	{
 		// move past the next "." character
-		if ( str[ pos ] == '.' )
+		if ( s[ pos ] == '.' )
 		{
 			pos ++;
 		}
 
-		if ( pos >= str.size() )
+		if ( pos >= s.size() )
 		{
 			break;
 		}
 
-		const char * const p = &str[pos];
+		const char * const p = &s[pos];
 
 		// if the next char is not numeric, then we're done
 		if ( isdigit( p[0] ) == false )
@@ -161,21 +161,21 @@ SNMPpp::OID SNMPpp::OID::operator+( const std::string &str ) const
 		newOid.v.push_back( atoi( p ) );
 
 		// move our position pointer past the numeric value we just processed
-		pos = str.find_first_not_of( "0123456789", pos );
+		pos = s.find_first_not_of( "0123456789", pos );
 	}
 
 	return newOid;
 }
 
 
-SNMPpp::OID &SNMPpp::OID::operator+=( const std::string &str )
+SNMPpp::OID &SNMPpp::OID::operator+=( const std::string &s )
 {
 	// For example:
 	//
 	//		SNMPpp::OID oid( ".1.2.3.4" );
 	//		oid += ".5.6";
 
-	OID newOid = operator+( str );
+	OID newOid = operator+( s );
 	v.swap( newOid.v );
 
 	return *this;
@@ -194,22 +194,22 @@ SNMPpp::OID &SNMPpp::OID::set( const OID &oid )
 }
 
 
-SNMPpp::OID &SNMPpp::OID::set( const char * const str )
+SNMPpp::OID &SNMPpp::OID::set( const char * const s )
 {
 	clear();
-	if ( str != NULL )
+	if ( s != NULL )
 	{
-		operator+=( std::string( str ) );
+		operator+=( std::string( s ) );
 	}
 
 	return *this;
 }
 
 
-SNMPpp::OID &SNMPpp::OID::set( const std::string &str )
+SNMPpp::OID &SNMPpp::OID::set( const std::string &s )
 {
 	clear();
-	operator+=( str );
+	operator+=( s );
 
 	return *this;
 }

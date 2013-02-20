@@ -82,16 +82,16 @@ namespace SNMPpp
 			// append one or more numeric values to the end of the existing OID
 			//		OID oid( ".1.3.6" );
 			//		oid += ".1.4";			// == .1.3.6.1.4
-			virtual OID  operator+ ( const std::string &str ) const;
-			virtual OID &operator+=( const std::string &str );
+			virtual OID  operator+ ( const std::string &s ) const;
+			virtual OID &operator+=( const std::string &s );
 
 			// reuse an OID by setting the numeric value as indicated
 			virtual OID &set( const OID &oid );
-			virtual OID &set( const char * const str );
-			virtual OID &set( const std::string &str );
+			virtual OID &set( const char * const s );
+			virtual OID &set( const std::string &s );
 			virtual OID &set( const SNMPpp::OID::ECommon &location );
-			virtual OID &operator=( const std::string &str ) { return set( str ); }
-			virtual OID &operator=( const char * const str ) { return set( str ); }
+			virtual OID &operator=( const std::string &s ) { return set( s ); }
+			virtual OID &operator=( const char * const s ) { return set( s ); }
 
 			// is this object a child of "rhs"?  (note this includes grandchildren, etc)
 			//

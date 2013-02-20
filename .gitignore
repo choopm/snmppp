@@ -5,6 +5,5 @@
 .kdev4
 SNMPpp.kdev4
 
-libsnmppp.a
-libsnmppp.so
+code/build
 
