@@ -4,3 +4,8 @@
 
 #include <SNMPpp/SNMPpp.hpp>
 
+
+std::string SNMPpp::version( void )
+{
+	return std::string( LIBSNMPPPVER );
+}

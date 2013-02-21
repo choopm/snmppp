@@ -2,14 +2,13 @@
 # SNMPpp project uses the MIT license. See LICENSE for details.
 # Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-project ( SNMPpp )
+PROJECT ( SNMPpp CXX )
 
-file ( GLOB EXAMPLES *.cpp )
-foreach ( EXAMPLE_CPP ${EXAMPLES} )
+FILE ( GLOB EXAMPLES *.cpp )
+FOREACH ( EXAMPLE_CPP ${EXAMPLES} )
 
-	get_filename_component( EXAMPLE ${EXAMPLE_CPP} NAME_WE )
-	add_executable ( ${EXAMPLE} ${EXAMPLE_CPP} )
-	target_link_libraries ( ${EXAMPLE} snmppps ${SNMP_LIBRARIES} )
+	GET_FILENAME_COMPONENT( EXAMPLE ${EXAMPLE_CPP} NAME_WE )
+	ADD_EXECUTABLE ( ${EXAMPLE} ${EXAMPLE_CPP} )
+	TARGET_LINK_LIBRARIES ( ${EXAMPLE} snmppps ${SNMP_LIBRARIES} )
 
-endforeach()
-
+ENDFOREACH()

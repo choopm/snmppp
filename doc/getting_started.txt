@@ -12,24 +12,24 @@ Quick guide on getting started with SNMP++:
 
 	- download dependencies (e.g., "sudo apt-get install cmake libsnmp-dev ..."; see "installing_snmp_ubuntu.txt")
 	- download SNMP++ (e.g., "git clone git://git.code.sf.net/p/snmppp snmppp")
-	- cd snmppp/code/
+	- cd snmppp/
 	- mkdir build
 	- cd build
 	- cmake ..
 	- make
+
+Other possible targets include:  "sudo make install" or "make package".
 
 ==DIRECTORIES==
 
 The code you likely want to build and/or link against is in the following two directories:
 
 	- code/src/*.cpp
-	- include/SNMPpp/*.hpp
-
-I have not (yet) set this up to package as an easy-to-install .deb, though that is one of my goals.  In the meantime, I did create these directories so the code can be easily incorporated into an existing project, or development environment.
+	- code/include/SNMPpp/*.hpp
 
 One additional directory to point out is a series of test cases and example code which can be easily referenced to get started:
 
-	- examples/*.cpp
+	- code/examples/*.cpp
 
 ==NET-SNMP==
 
@@ -50,4 +50,4 @@ The "Single API" typically has functions that start with "snmp_sess_".  For exam
 
 
 Stéphane Charette <stephanecharette@gmail.com>
-2013-Feb-19.
+2013-Feb-20.

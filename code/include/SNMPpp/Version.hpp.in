@@ -6,6 +6,6 @@
 
 #ifndef LIBSNMPPPVER
 // note: the following line gets auto-updated by CMake
-#define LIBSNMPPPVER "@SNMPP_VERSION_NUMBER@"
+#define LIBSNMPPPVER "@SNMPPP_VERSION@"
 #endif
 

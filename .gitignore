@@ -4,6 +4,6 @@
 *.kdev4
 .kdev4
 
-code/build
+build
 code/include/SNMPpp/Version.hpp
 
