@@ -24,7 +24,7 @@ int main( int argc, char *argv[] )
 	// Otherwise, a C++ exception will be thrown.  Like this one:
 	try
 	{
-		std::cout << "\tsending " << o << " (but expect this to fail since AgentX is not initialized)" << std::endl;
+		std::cout << "\tSending " << o << " (but expect this to fail since AgentX is not initialized)" << std::endl;
 		SNMPpp::sendV2Trap( o );
 
 		assert( false ); // we should never get here since sendV2Trap() will throw a C++ exception
