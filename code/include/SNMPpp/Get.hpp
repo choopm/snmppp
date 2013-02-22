@@ -5,6 +5,7 @@
 #pragma once
 
 #include <SNMPpp/net-snmppp.hpp>
+#include <SNMPpp/Session.hpp>
 #include <SNMPpp/OID.hpp>
 #include <SNMPpp/PDU.hpp>
 

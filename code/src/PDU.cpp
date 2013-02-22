@@ -343,7 +343,7 @@ std::string SNMPpp::PDU::asString( const SNMPpp::OID &o ) const
 		case ASN_OBJECT_ID:
 			ss << SNMPpp::OID( vl.val.objid, vl.val_len/sizeof(unsigned long) );
 			break;
-		case 67: // TODO, FIXME: isn't there a #define for timeticks?
+		case ASN_TIMETICKS:
 			ss << *vl.val.integer << " timeticks (1/100 seconds)";
 			break;
 		default:
@@ -375,7 +375,7 @@ std::ostream &operator<<( std::ostream &os, const SNMPpp::PDU &pdu )
 			case ASN_OCTET_STR:
 			case ASN_NULL:
 			case ASN_OBJECT_ID:
-			case 67: // timeticks
+			case ASN_TIMETICKS:
 				os << ", txt=" << pdu.asString( v[idx] );
 				break;
 		}

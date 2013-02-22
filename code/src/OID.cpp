@@ -219,15 +219,12 @@ SNMPpp::OID &SNMPpp::OID::set( const SNMPpp::OID::ECommon &location )
 {
 	switch ( location )
 	{
-		case kInvalid:
-		case kEmpty:
-			break;
-		case kInternet:
-			set( ".1.3.6.1" );
-			break;
-		case kPrivateEnterprise:
-			set( ".1.3.6.1.4" );
-			break;
+		case kInvalid:			set( ""						); break;
+		case kEmpty:				set( ""						); break;
+		case kInternet:			set( "1.3.6.1"				); break;
+		case kPrivateEnterprise:	set( "1.3.6.1.4"				); break;
+		case kSysUpTime:			set( "1.3.6.1.2.1.1.3.0"		); break;
+		case kTrap:				set( "1.3.6.1.6.3.1.1.4.1.0"	); break;
 	}
 
 	return *this;

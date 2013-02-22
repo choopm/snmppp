@@ -2,63 +2,59 @@
 // SNMPpp project uses the MIT license. See LICENSE for details.
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-#include <stdlib.h>
-#include <sstream>
-#include <stdexcept>
 #include <SNMPpp/net-snmppp.hpp>
 
 
-void SNMPpp::openSession( SNMPpp::SessionHandle &handle, const std::string &server, const std::string &community, const int version, const int retryAttempts )
+void SNMPpp::netsnmpDisableLogging( void )
 {
-	// make sure you call closeSession() to free up the handle before calling
-	// openSession() because we're about to overwrite any previous handles
-	handle = NULL;
+	snmp_disable_log();
 
-	netsnmp_session session = {0};
-	snmp_sess_init( &session );
+	return;
+}
 
-	session.version			= version;
-	session.retries			= retryAttempts;
-	session.peername			= (char*)server.c_str();
-	session.community		= (unsigned char*)community.c_str();
-	session.community_len	= community.size();
 
-	handle = snmp_sess_open( &session );
-	if ( handle == NULL || snmp_sess_session( handle ) == NULL )
+void SNMPpp::netsnmpLogStdErr( const bool enabled )
+{
+	if ( enabled )
 	{
-		// Don't use snmp_sess_error() if the problem is with snmp_sess_open()!
-		// Instead, fall back to the traditional snmp_error() and pass in the
-		// original netsnmp_session structure.  See the man pages for
-		// snmp_sess_error() and snmp_error() for details.
-		int error1 = 0;
-		int error2 = 0;
-		char *msg  = NULL;
-		snmp_error( &session, &error1, &error2, &msg );
-
-		std::stringstream ss;
-		ss	<< "Failed to open SNMP session to \"" << session.peername << "\". ["
-			<< "e1=" << error1 << ", "
-			<< "e2=" << error2;
-		if ( msg != NULL && msg[0] != '\0' )
-		{
-			ss << ", " << msg;
-		}
-		ss << "]";
-
-		free( msg );
-		throw std::runtime_error( ss.str() );
+		init_snmp_logging();
+		snmp_enable_stderrlog();
+	}
+	else
+	{
+		snmp_disable_stderrlog();
 	}
 
 	return;
 }
 
 
-void SNMPpp::closeSession( SNMPpp::SessionHandle &handle )
+void SNMPpp::netsnmpLogSyslog( const bool enabled )
 {
-	if ( handle )
+	if ( enabled )
 	{
-		snmp_sess_close( handle );
-		handle = NULL;
+		init_snmp_logging();
+		snmp_enable_syslog();
+	}
+	else
+	{
+		snmp_disable_syslog();
+	}
+
+	return;
+}
+
+
+void SNMPpp::netsnmpLogToFile( const bool enabled, const std::string &filename )
+{
+	if ( enabled && ! filename.empty() )
+	{
+		init_snmp_logging();
+		snmp_enable_filelog( filename.c_str(), 1 ); // 0 overwrites, 1 appends
+	}
+	else
+	{
+		snmp_disable_filelog();
 	}
 
 	return;

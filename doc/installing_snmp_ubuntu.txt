@@ -32,8 +32,32 @@ The default snmpd configuration file only provides a very small subset of the SN
 	- to see the short name:          snmpwalk -c public -v 2c -OS 127.0.0.1 .1
 	- to see the full name:           snmpwalk -c public -v 2c -Ou 127.0.0.1 .1
 
-Obviously there is much more that can be configured with snmpd.conf, some of which has important security implications.  I strongly suggest you read through the man page for snmpd.conf to ensure snmpd isn't left wide open with a common default community string.
+The default snmpd configuration file will create the AgentX socket so only processes running as "root" can connect to it.  This means if you want to send out a trap, as soon as you try to make calls such as SNMPpp::initializeNetSnmpAgent() you'll see errors such as this:
 
+	No log handling enabled - turning on stderr logging
+	Warning: Failed to connect to the agentx master agent ([NIL]): 
+	Cannot rename /var/lib/snmp/foo.conf to /var/lib/snmp/foo.0.conf
+	Cannot unlink /var/lib/snmp/foo.conf
+	read_config_store open failure on /var/lib/snmp/foo.conf
+
+To fix the first problem, you need to tell snmpd to open up the AgentX socket for read/write access to more than just the root user:
+
+	- edit /etc/snmp/snmpd.conf
+	- look for this line:            master agentx
+	- add this new line after it:    agentXPerms 777 666
+	- (note there are additional optional parameters for agentXPerms...look it up if you need more security)
+	- restart the server:            sudo service snmpd restart
+
+To fix the file persion problem, make sure that /var/lib/snmp is writeable by every user which runs an AgentX application.  For development purposes, I made my directory writeable by everyone:
+
+	- chmod a+w /var/lib/snmp
+
+----
+
+Obviously there is much more that can be configured with snmpd.conf, some of which has important security implications.  I strongly suggest you read through the man page for snmpd.conf to ensure snmpd isn't left wide open with a common default community string and open permissions.
+
+----
 
 Stéphane Charette <stephanecharette@gmail.com>
-2013-Feb-13.
+2013-Feb-21.
+

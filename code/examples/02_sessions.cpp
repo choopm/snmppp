@@ -4,7 +4,7 @@
 
 #include <assert.h>
 #include <iostream>
-#include <SNMPpp/net-snmppp.hpp>
+#include <SNMPpp/Session.hpp>
 
 
 void checkSession( const std::string &server, const bool expectThrow = false )

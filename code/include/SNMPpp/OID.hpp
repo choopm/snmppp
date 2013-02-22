@@ -22,7 +22,9 @@ namespace SNMPpp
 				kInvalid				= 0,
 				kEmpty				= 1,
 				kInternet			= 2,		// .1.3.6
-				kPrivateEnterprise	= 3		// .1.3.6.1.4
+				kPrivateEnterprise	= 3,		// .1.3.6.1.4
+				kSysUpTime			= 4,		// .1.3.6.1.2.1.1.3.0
+				kTrap				= 5		// .1.3.6.1.6.3.1.1.4.1.0
 			};
 
 			virtual ~OID( void );
@@ -53,13 +55,20 @@ namespace SNMPpp
 			// convert the OID to an array of unsigned longs ("oid *") the way net-snmp needs
 			virtual operator const unsigned long *( void ) const;
 
+			// some of the net-snmp API calls convert everything to uchar*
+			virtual operator const unsigned char *( void ) const { return (unsigned char *)operator const unsigned long *(); }
+
 			// clear the OID value in the object (clear the vector)
 			virtual OID &clear( void );
 
 			// return TRUE if the OID object is empty (no OID values specified)
 			virtual bool empty( void ) const { return v.empty(); }
 
-			// return the number of values in the OID
+			// return the number of values in the OID vector
+			//
+			// remember this is the number of UNSIGNED LONG, while some of the
+			// net-snmp API calls expect the number of bytes, in which case you
+			// must multiply by sizeof(ulong)
 			virtual operator size_t	( void ) const { return v.size(); }
 			virtual size_t size		( void ) const { return v.size(); }
 			virtual size_t len		( void ) const { return v.size(); }
