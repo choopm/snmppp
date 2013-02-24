@@ -11,10 +11,10 @@
 //
 // If you are a developer who has installed a package such as snmppp-dev.deb
 // or snmppp-dev.rpm and it is missing Version.hpp, please contact whoever
-// created the broken package, or visit the SNMP++ project web page.
+// created the broken package, or visit the SNMPpp project web page.
 #include <SNMPpp/Version.hpp>
 
-// include all of the SNMP++ #include files in the correct order so cyclic dependencies are avoided
+// include all of the SNMPpp #include files in the correct order so cyclic dependencies are avoided
 #include <SNMPpp/net-snmppp.hpp>
 #include <SNMPpp/OID.hpp>
 #include <SNMPpp/PDU.hpp>
@@ -23,6 +23,6 @@
 
 namespace SNMPpp
 {
-	// return the SNMP++ version number
+	// return the SNMPpp version number
 	std::string version( void );
 };

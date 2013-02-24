@@ -60,7 +60,7 @@ namespace SNMPpp
 	//		"the time ... since the network management portion of the system was re-initialized"
 	//
 	// But in all likelyhood, this value isn't easily available from code
-	// which is using SNMP++.  So several other possibly useful values have
+	// which is using SNMPpp.  So several other possibly useful values have
 	// been made available for convenience.
 	//
 	// Return the number of centiseconds (1/100s) since the given time.

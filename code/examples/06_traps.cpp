@@ -36,7 +36,7 @@ int main( int argc, char *argv[] )
 	}
 
 	std::cout << "\tInitializing AgentX..." << std::endl;
-	SNMPpp::initializeNetSnmpAgent();
+	SNMPpp::initializeNetSnmpAgent();	
 	std::cout << "\tSending " << o << "..." << std::endl;
 	SNMPpp::sendV2Trap( o );
 

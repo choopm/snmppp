@@ -20,9 +20,9 @@ SNMPpp::OID::OID( void )
 }
 
 
-SNMPpp::OID::OID( const SNMPpp::OID &oid )
+SNMPpp::OID::OID( const SNMPpp::OID &o )
 {
-	set( oid );
+	set( o );
 
 	return;
 }
@@ -58,6 +58,21 @@ SNMPpp::OID::OID( const unsigned long *array, const size_t length )
 	for ( size_t idx = 0; idx < length; idx ++ )
 	{
 		v.push_back( array[idx] );
+	}
+
+	return;
+}
+
+
+SNMPpp::OID::OID( const netsnmp_variable_list *vl )
+{
+	if ( vl != NULL )
+	{
+		v.reserve( vl->name_length );
+		for ( size_t idx = 0; idx < vl->name_length; idx ++ )
+		{
+			v.push_back( vl->name[idx] );
+		}
 	}
 
 	return;
@@ -182,12 +197,12 @@ SNMPpp::OID &SNMPpp::OID::operator+=( const std::string &s )
 }
 
 
-SNMPpp::OID &SNMPpp::OID::set( const OID &oid )
+SNMPpp::OID &SNMPpp::OID::set( const OID &o )
 {
-	if ( &oid != this )
+	if ( &o != this )
 	{
 		clear();
-		v = oid.v;
+		v = o.v;
 	}
 
 	return *this;

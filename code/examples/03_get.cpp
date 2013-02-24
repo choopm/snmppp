@@ -10,7 +10,6 @@
 void exampleGetNext( SNMPpp::SessionHandle &handle )
 {
 	std::cout << "Perform several iterations of \"getnext\" to walk through the MIB:" << std::endl;
-	
 	SNMPpp::PDU pdu( SNMPpp::PDU::kGetNext );
 	pdu.addNullVar( SNMPpp::OID::kInternet );	// start with this OID
 
@@ -89,7 +88,7 @@ void exampleGetSingleOid( SNMPpp::SessionHandle &handle )
 	
 	std::cout 	<< pdu
 				<< "\tIf we know the type of an OID, then we can retrieve the value directly from the PDU:" << std::endl
-				<< "\t" << o << ":  " << pdu.getString(o) << std::endl;
+				<< "\t" << o << ":  " << pdu.varlist().getString(o) << std::endl;
 
 	// always remember to free the PDU once done with it
 	pdu.free();

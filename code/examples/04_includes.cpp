@@ -16,8 +16,9 @@ int main( int argc, char *argv[] )
 	SNMPpp::openSession( handle, "udp:localhost:161" );
 
 	SNMPpp::OID o( ".1" );
-	SNMPpp::PDU p( SNMPpp::PDU::kGetNext );
-	p = SNMPpp::getNext( handle, p );
+	SNMPpp::PDU p = SNMPpp::getNext( handle, o );
+
+	std::cout << p << std::endl;
 
 	p.free();
 	

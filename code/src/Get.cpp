@@ -88,24 +88,29 @@ SNMPpp::PDU SNMPpp::getNext( SNMPpp::SessionHandle &session, const SNMPpp::OID &
 }
 
 
-SNMPpp::PDU SNMPpp::getNext( SNMPpp::SessionHandle &session, SNMPpp::PDU &request )
+SNMPpp::PDU SNMPpp::getNext( SNMPpp::SessionHandle &session, SNMPpp::PDU &pdu )
 {
-	netsnmp_pdu *pdu = request;
-	if ( pdu == NULL )
+	if ( pdu.empty() )
 	{
-		throw std::invalid_argument( "Request PDU must not be NULL." );
+		throw std::invalid_argument( "Cannot GETNEXT with an empty PDU." );
 	}
 
-	if ( request.getType() == SNMPpp::PDU::kGetNext )
+	if ( pdu.getType() == SNMPpp::PDU::kGetNext )
 	{
 		// the PDU is already GETNEXT
-		return sync( session, request );
+		return sync( session, pdu );
 	}
 
-	// otherwise take the first OID in the PDU (which could be a response PDU) and create a new GETNEXT
+	// otherwise take the last OID in the PDU (which could be a response PDU) and create a new GETNEXT
+	netsnmp_variable_list *vl = pdu.varlist();
+	while ( vl->next_variable != NULL )
+	{
+		vl = vl->next_variable;
+	}
 
-	SNMPpp::OID o = request.firstOID();
-	request.free();
+	SNMPpp::OID o( vl );
+	pdu.free();
+
 	return getNext( session, o );
 }
 
@@ -114,7 +119,7 @@ SNMPpp::PDU SNMPpp::get( SNMPpp::SessionHandle &session, const SetOID &oids )
 {
 	if ( oids.empty() )
 	{
-		throw std::invalid_argument( "Cannot get empty set of OIDs." );
+		throw std::invalid_argument( "Cannot GET an empty set of OIDs." );
 	}
 
 	SNMPpp::PDU pdu( SNMPpp::PDU::kGet );
@@ -152,7 +157,7 @@ SNMPpp::PDU SNMPpp::getBulk( SNMPpp::SessionHandle &session, SNMPpp::PDU &pdu, c
 	{
 		// copy the OIDs and build a new PDU to use for getbulk
 		SNMPpp::SetOID s;
-		pdu.getOids( s );
+		pdu.varlist().getOids( s );
 		pdu.free();
 
 		pdu = SNMPpp::PDU( SNMPpp::PDU::kGetBulk );

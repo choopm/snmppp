@@ -48,19 +48,20 @@ void checkConstness( void )
 {
 	// all of these methods should be "const"
 
-	const SNMPpp::OID oid( "1.2.3.4.5.6" );
-	std::cout << "Checking compile-time constness using the following const object: " << oid << std::endl;
+	const SNMPpp::OID o( "1.2.3.4.5.6" );
+	std::cout << "Checking compile-time constness using the following const object: " << o << std::endl;
 
-	std::cout	<< "\tSize:            " << oid.size() << std::endl
-				<< "\tEmpty:           " << oid.empty() << std::endl
-				<< "\tstd::string:     " << std::string(oid) << std::endl
-				<< "\tisChild:         " << oid.isChildOf( "1.2.3.4" ) << std::endl
-				<< "\tisParent:        " << oid.isParentOf( "1.2.3.4.5.6.7.8" ) << std::endl
-				<< "\timmediateChild:  " << oid.isImmediateChildOf( ".1.2.3.4.5") << std::endl
-				<< "\timmediateParent: " << oid.isImmediateParentOf( "1.2.3.4.5.6.7") << std::endl;
+	std::cout	<< "\tSize:            " << o.size() << std::endl
+				<< "\tEmpty:           " << o.empty() << std::endl
+				<< "\tstd::string:     " << std::string(o) << std::endl
+				<< "\tisChild:         " << o.isChildOf( "1.2.3.4" ) << std::endl
+				<< "\tisParent:        " << o.isParentOf( "1.2.3.4.5.6.7.8" ) << std::endl
+				<< "\timmediateChild:  " << o.isImmediateChildOf( ".1.2.3.4.5") << std::endl
+				<< "\timmediateParent: " << o.isImmediateParentOf( "1.2.3.4.5.6.7") << std::endl;
 
 	return;
 }
+
 
 void checkBasicFunctionality( void )
 {

@@ -2,7 +2,7 @@
 // SNMPpp project uses the MIT license. See LICENSE for details.
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-The SNMP++ project is not about installing or running SNMP, but as a basic requirement to using it or developing with SNMP++, you must have access to a valid SNMP server.  Normally, the easiest way to do this is to get SNMP running on the same development platform or VM as where SNMP++ will be used.
+The SNMPpp project is not about installing or running SNMP, but as a basic requirement to using it or developing with SNMPpp, you must have access to a valid SNMP server.  Normally, the easiest way to do this is to get SNMP running on the same development platform or VM as where SNMPpp will be used.
 
 These are my own SNMP setup notes (February 2013); use them as-is, or as a starting reference:
 

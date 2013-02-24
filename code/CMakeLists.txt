@@ -4,7 +4,7 @@
 
 PROJECT ( SNMPpp CXX )
 
-# SNMP++ requires net-snmp (e.g., "libsnmp-dev.deb")
+# SNMPpp requires net-snmp (e.g., "libsnmp-dev.deb")
 FIND_LIBRARY ( NETSNMP_LIBRARY		NAMES netsnmp		)
 FIND_LIBRARY ( NETSNMPAGENT_LIBRARY	NAMES netsnmpagent	)
 FIND_LIBRARY ( NETSNMPHELPERS_LIBRARY	NAMES netsnmphelpers	)

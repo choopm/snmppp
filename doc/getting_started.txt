@@ -8,10 +8,10 @@ This project contains some C++ helper classes for SNMP.  A Large parts of these 
 
 ==GETTING STARTED==
 
-Quick guide on getting started with SNMP++:
+Quick guide on getting started with SNMPpp:
 
 	- download dependencies (e.g., "sudo apt-get install cmake libsnmp-dev ..."; see "installing_snmp_ubuntu.txt")
-	- download SNMP++ (e.g., "git clone git://git.code.sf.net/p/snmppp snmppp")
+	- download SNMPpp (e.g., "git clone git://git.code.sf.net/p/snmppp snmppp")
 	- cd snmppp/
 	- mkdir build
 	- cd build
@@ -33,11 +33,11 @@ One additional directory to point out is a series of test cases and example code
 
 ==NET-SNMP==
 
-Personally, I found working with net-snmp strangely difficult as I tend to get lost in the various APIs, or confused by the unfamiliar (to me!) SNMP terminology.  This is probably 100% my own fault due to me not having found the right net-snmp "getting started" documentation.  Please keep this in mind as it means some of the SNMP++ code may be doing the wrong thing for you, or may not be doing it in an efficient manner.  Let me know if you run into issues, or if you have patches to contribute!
+Personally, I found working with net-snmp strangely difficult as I tend to get lost in the various APIs, or confused by the unfamiliar (to me!) SNMP terminology.  This is probably 100% my own fault due to me not having found the right net-snmp "getting started" documentation.  Please keep this in mind as it means some of the SNMPpp code may be doing the wrong thing for you, or may not be doing it in an efficient manner.  Let me know if you run into issues, or if you have patches to contribute!
 
 One of the most important things to highlight is the difference between the old "Traditional API" for net-snmp API, and the newer "Single API".
 
-The "Traditional API" is not thread-friendly, while the newer "Single API" can be used in both single-threaded and multi-threaded applications.  For this reason, SNMP++ uses the "Single API".  More details on this can be found here:  http://www.net-snmp.org/docs/README.thread.html
+The "Traditional API" is not thread-friendly, while the newer "Single API" can be used in both single-threaded and multi-threaded applications.  For this reason, SNMPpp uses the "Single API".  More details on this can be found here:  http://www.net-snmp.org/docs/README.thread.html
 
 The "Single API" typically has functions that start with "snmp_sess_".  For example:
 
@@ -50,4 +50,4 @@ The "Single API" typically has functions that start with "snmp_sess_".  For exam
 
 
 Stéphane Charette <stephanecharette@gmail.com>
-2013-Feb-20.
+2013-Feb-24.

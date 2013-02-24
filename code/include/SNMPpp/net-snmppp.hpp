@@ -4,7 +4,7 @@
 
 #pragma once
 
-// All net-snmp includes needed by SNMP++ are included here:
+// All net-snmp includes needed by SNMPpp are included here:
 #include <stdlib.h> // needed by net-snmp/utilities.h
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/config_api.h>
@@ -17,7 +17,8 @@
 #include <net-snmp/agent/snmp_agent.h>
 #include <net-snmp/agent/snmp_vars.h>
 #include <net-snmp/agent/ds_agent.h>
-// That's it.  No other SNMP++ source files should have to include additional net-snmp headers.
+//#include <net-snmp/library/snmp_api.h>
+// That's it.  No other SNMPpp source files should have to include additional net-snmp headers.
 
 #include <string>
 

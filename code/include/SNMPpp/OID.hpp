@@ -4,10 +4,12 @@
 
 #pragma once
 
+#include <map>
 #include <set>
 #include <vector>
 #include <string>
 #include <ostream>
+#include <SNMPpp/net-snmppp.hpp>
 
 
 namespace SNMPpp
@@ -47,6 +49,7 @@ namespace SNMPpp
 
 			// initialize using the net-snmp "oid *" array
 			OID( const unsigned long *l, const size_t len );
+			OID( const netsnmp_variable_list *vl );
 
 			// convert the OID to the familiar numeric format, such as ".1.3.6.1.4.x.x.x"
 			virtual operator std::string( void ) const;
@@ -132,6 +135,10 @@ namespace SNMPpp
 
 	typedef std::set   <OID> SetOID;
 	typedef std::vector<OID> VecOID;
+
+	// This map isn't used by OID, but instead by PDU and Varlist.  The
+	// map key is the OID though, so it is defined here for convenience.
+	typedef std::map < SNMPpp::OID, netsnmp_variable_list *> MapOidVarList;
 };
 
 std::ostream &operator<<( std::ostream &os, const SNMPpp::OID &o );
