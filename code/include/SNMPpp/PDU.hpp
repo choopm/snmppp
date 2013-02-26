@@ -78,8 +78,8 @@ namespace SNMPpp
 
 			// for convenience, expose a few of the Varlist members we're likely to use in simple cases
 
-			virtual size_t size		( void )					const	{ return varlist().size();					}
-			virtual bool contains	( const SNMPpp::OID &o )	const	{ return varlist().contains( o );				}
+			virtual size_t size		( void )					const;
+			virtual bool contains	( const SNMPpp::OID &o )	const;
 			virtual PDU &addNullVar	( const SNMPpp::OID &o );
 			virtual PDU &addNullVar	( const SNMPpp::SetOID &s );
 			virtual PDU &addNullVar	( const SNMPpp::VecOID &v );

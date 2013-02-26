@@ -17,31 +17,22 @@ int main( int argc, char *argv[] )
 	// This is the simple v2 trap we want to send out:
 	const SNMPpp::OID o( ".1.3.6.1.4.1.38322.1.0.1" );
 	
-	// Remember that *YOU MUST* be a net-snmp agent to send out traps.
-	// This means if your application isn't already calling the net-snmp
-	// API to initialize itself as AgentX, then you'll want to call
-	// SNMPpp::initializeNetSnmpAgent() when your application starts.
-	// Otherwise, a C++ exception will be thrown.  Like this one:
 	try
 	{
-		std::cout << "\tSending " << o << " (but expect this to fail since AgentX is not initialized)" << std::endl;
+		// this should fail since AgentX is not initialized
 		SNMPpp::sendV2Trap( o );
 
 		assert( false ); // we should never get here since sendV2Trap() will throw a C++ exception
 	}
 	catch ( const std::runtime_error &e )
 	{
-		std::cout	<< "\tTRAP NOT SENT!" << std::endl
-					<< "\tException caught: \"" << e.what() << "\"" << std::endl;
+		// do nothing, we expected sendV2Trap() to fail
 	}
 
 	std::cout << "\tInitializing AgentX..." << std::endl;
 	SNMPpp::initializeNetSnmpAgent();	
 	std::cout << "\tSending " << o << "..." << std::endl;
 	SNMPpp::sendV2Trap( o );
-
-	// and only once we're done and our app is shutting down (or when we're
-	// finished with SNMP) do we de-initialize the net-snmp AgentX code
 	SNMPpp::shutdownNetSnmpAgent();
 
 	std::cout << "\t...done!" << std::endl;

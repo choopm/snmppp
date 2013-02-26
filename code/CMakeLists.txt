@@ -24,4 +24,4 @@ SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_CFLAGS} -O0 -ggdb" )
 INCLUDE_DIRECTORIES ( BEFORE include )
 SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-show-option -Wall -Werror -Wshadow -Wformat=2 -Winit-self -Wwrite-strings -fpic" )
 
-SUBDIRS ( src examples include/SNMPpp )
+SUBDIRS ( src examples test include/SNMPpp )

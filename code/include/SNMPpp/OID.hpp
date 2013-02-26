@@ -67,6 +67,9 @@ namespace SNMPpp
 			// return TRUE if the OID object is empty (no OID values specified)
 			virtual bool empty( void ) const { return v.empty(); }
 
+			// return TRUE if the OID object is not empty
+			virtual operator bool( void ) const { return ! empty(); }
+
 			// return the number of values in the OID vector
 			//
 			// remember this is the number of UNSIGNED LONG, while some of the

@@ -13,7 +13,7 @@
 namespace SNMPpp
 {
 	// Several C++ helpers for some of the common net-snmp "GET" actions.
-	// Remember to free the response PDUs by caling SNMPpp::PDU::free() or
+	// Remember to free the response PDUs by calling SNMPpp::PDU::free() or
 	// netsnmp's snmp_pdu_free().
 
 	// The request PDU is automatically freed.  The response PDU needs to be

@@ -2,22 +2,21 @@
 // SNMPpp project uses the MIT license. See LICENSE for details.
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-#include <assert.h>
 #include <iostream>
 #include <SNMPpp/Get.hpp>
 
 
-void exampleGetNext( SNMPpp::SessionHandle &handle )
+void exampleGetNext( SNMPpp::SessionHandle &sessionHandle )
 {
 	std::cout << "Perform several iterations of \"getnext\" to walk through the MIB:" << std::endl;
 	SNMPpp::PDU pdu( SNMPpp::PDU::kGetNext );
 	pdu.addNullVar( SNMPpp::OID::kInternet );	// start with this OID
-
+	
 	for ( size_t idx = 0; idx < 10; idx ++ )
 	{
 		// keep calling "getNext" using whatever OID we last received
-		pdu = SNMPpp::getNext( handle, pdu );
-
+		pdu = SNMPpp::getNext( sessionHandle, pdu );
+		
 		// for debugging, display the OID and the value we retrieved from the SNMP server
 		std::cout << pdu;
 	}
@@ -29,9 +28,9 @@ void exampleGetNext( SNMPpp::SessionHandle &handle )
 }
 
 
-void example1ManyOidsAtOnce( SNMPpp::SessionHandle &handle )
+void example1ManyOidsAtOnce( SNMPpp::SessionHandle &sessionHandle )
 {
-	std::cout << "Perform a single \"get\" with multiple OIDs at once (#1):" << std::endl;
+	std::cout << "Perform a single \"GET\" with multiple OIDs:" << std::endl;
 
 	// create a request PDU and add to it all the OIDs we want
 	SNMPpp::PDU pdu( SNMPpp::PDU::kGet );
@@ -40,7 +39,7 @@ void example1ManyOidsAtOnce( SNMPpp::SessionHandle &handle )
 	pdu.addNullVar( "1.3.6.1.2.1.1.3.0" );
 	pdu.addNullVar( "1.3.6.1.2.1.1.4.0" );
 
-	pdu = SNMPpp::get( handle, pdu );
+	pdu = SNMPpp::get( sessionHandle, pdu );
 
 	// for debugging, display the OID and the value we retrieved from the SNMP server
 	std::cout << pdu;
@@ -52,9 +51,9 @@ void example1ManyOidsAtOnce( SNMPpp::SessionHandle &handle )
 }
 
 
-void example2ManyOidsAtOnce( SNMPpp::SessionHandle &handle )
+void example2ManyOidsAtOnce( SNMPpp::SessionHandle &sessionHandle )
 {
-	std::cout << "Perform a single \"get\" with multiple OIDs at once (#2):" << std::endl;
+	std::cout << "Perform a single \"GET\" (using a std::set) with multiple OIDs:" << std::endl;
 
 	// if there are many OIDs we know are needed, they can all be retrieved at the same time
 	SNMPpp::SetOID oids;
@@ -67,7 +66,7 @@ void example2ManyOidsAtOnce( SNMPpp::SessionHandle &handle )
 	oids.insert( ".1.3.6.1.2.1.1.7.0" );
 	oids.insert( ".1.3.6.1.2.1.1.8.0" );
 
-	SNMPpp::PDU pdu = SNMPpp::get( handle, oids );
+	SNMPpp::PDU pdu = SNMPpp::get( sessionHandle, oids );
 
 	// for debugging, display the OID and the value we retrieved from the SNMP server
 	std::cout << pdu;
@@ -79,13 +78,13 @@ void example2ManyOidsAtOnce( SNMPpp::SessionHandle &handle )
 }
 
 
-void exampleGetSingleOid( SNMPpp::SessionHandle &handle )
+void exampleGetSingleOid( SNMPpp::SessionHandle &sessionHandle )
 {
-	std::cout << "Perform a get with a specific OID:" << std::endl;
+	std::cout << "Perform a \"GET\" with a specific OID:" << std::endl;
 
 	SNMPpp::OID o = "1.3.6.1.2.1.1.1.0";
-	SNMPpp::PDU pdu = SNMPpp::get( handle, o );
-	
+	SNMPpp::PDU pdu = SNMPpp::get( sessionHandle, o );
+
 	std::cout 	<< pdu
 				<< "\tIf we know the type of an OID, then we can retrieve the value directly from the PDU:" << std::endl
 				<< "\t" << o << ":  " << pdu.varlist().getString(o) << std::endl;
@@ -97,17 +96,17 @@ void exampleGetSingleOid( SNMPpp::SessionHandle &handle )
 }
 
 
-void example1GetBulk( SNMPpp::SessionHandle &handle )
+void example1GetBulk( SNMPpp::SessionHandle &sessionHandle )
 {
-	std::cout << "Perform a getbulk (SNMPv2) with a single starting OID:" << std::endl;
+	std::cout << "Perform a GETBULK (SNMPv2) with a single starting OID:" << std::endl;
 
 	SNMPpp::PDU pdu( SNMPpp::PDU::kGetBulk );
 	pdu.addNullVar( ".1" );
 
 	// note the number of bulk requests to try and perform, meaning it will get
 	// twenty consecutive values unless it gets to the end of the tree, or the
-	// maximum packet size has been exceeded
-	pdu = SNMPpp::getBulk( handle, pdu, 20 );
+	// maximum packet size has been reached
+	pdu = SNMPpp::getBulk( sessionHandle, pdu, 20 );
 
 	// for debugging, display the OID and the value we retrieved from the SNMP server
 	std::cout << pdu;
@@ -119,9 +118,9 @@ void example1GetBulk( SNMPpp::SessionHandle &handle )
 }
 
 
-void example2GetBulk( SNMPpp::SessionHandle &handle )
+void example2GetBulk( SNMPpp::SessionHandle &sessionHandle )
 {
-	std::cout << "Perform a getbulk (SNMPv2) with multiple starting OIDs:" << std::endl;
+	std::cout << "Perform a GETBULK (SNMPv2) with multiple starting OIDs:" << std::endl;
 
 	SNMPpp::SetOID s;
 	s.insert( "1.3.6.1.2.1" );
@@ -132,7 +131,7 @@ void example2GetBulk( SNMPpp::SessionHandle &handle )
 	SNMPpp::PDU pdu( SNMPpp::PDU::kGetBulk );
 	pdu.addNullVar( s );
 
-	pdu = SNMPpp::getBulk( handle, pdu, 5 ); // the reply PDU should have 5 OIDs for each of the starting locations, for a total of 15 OIDs
+	pdu = SNMPpp::getBulk( sessionHandle, pdu, 5 ); // the reply PDU should have 5 OIDs for each of the starting locations, for a total of 15 OIDs
 
 	// for debugging, display the OID and the value we retrieved from the SNMP server
 	std::cout << pdu;
@@ -146,19 +145,19 @@ void example2GetBulk( SNMPpp::SessionHandle &handle )
 
 int main( int argc, char *argv[] )
 {
-	std::cout << "Test some of the net-snmp GET and GETNEXT functionality." << std::endl;
+	std::cout << "Example code showing several different ways to make GET/GETNEXT/GETBULK requests." << std::endl;
 
-	SNMPpp::SessionHandle handle;
-	SNMPpp::openSession( handle, "udp:localhost:161" );
+	SNMPpp::SessionHandle sessionHandle;
+	SNMPpp::openSession( sessionHandle, "udp:localhost:161" );
 
-	exampleGetNext			( handle );
-	example1ManyOidsAtOnce	( handle );
-	example2ManyOidsAtOnce	( handle );
-	exampleGetSingleOid		( handle );
-	example1GetBulk			( handle );
-	example2GetBulk			( handle );
+	exampleGetNext			( sessionHandle );
+	example1ManyOidsAtOnce	( sessionHandle );
+	example2ManyOidsAtOnce	( sessionHandle );
+	exampleGetSingleOid		( sessionHandle );
+	example1GetBulk			( sessionHandle );
+	example2GetBulk			( sessionHandle );
 
-	SNMPpp::closeSession( handle );
-	
+	SNMPpp::closeSession( sessionHandle );
+
 	return 0;
 }

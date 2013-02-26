@@ -12,22 +12,25 @@ void checkSession( const std::string &server, const bool expectThrow = false )
 	std::cout << "Setting up a session to \"" << server << "\"." << std::endl;
 
 	// opening a session can throw, so be ready to catch
+	SNMPpp::SessionHandle sessionHandle = NULL;
 	try
 	{
-		SNMPpp::SessionHandle handle = NULL;
-		SNMPpp::openSession( handle, server, "public" );
-		assert( handle != NULL );
+		SNMPpp::openSession( sessionHandle, server, "public" );
+		assert( sessionHandle != NULL );
 
 		// once done with a session handle, it must be closed
-		SNMPpp::closeSession( handle );
-		assert( handle == NULL );
+		SNMPpp::closeSession( sessionHandle );
+		assert( sessionHandle == NULL );
 		assert( expectThrow == false );
 	}
 	catch ( const std::exception &e )
 	{
-		std::cout << e.what() << std::endl;
+		if ( ! expectThrow )
+		{
+			std::cout << e.what() << std::endl;
+		}
+		assert( sessionHandle == NULL );
 		assert( expectThrow );
-		std::cout << "(...an exception was expected for this previous one.)" << std::endl;
 	}
 
 	return;
@@ -36,7 +39,8 @@ void checkSession( const std::string &server, const bool expectThrow = false )
 
 int main( int argc, char *argv[] )
 {
-	std::cout << "Test some of the net-snmp session helper functionality." << std::endl;
+	std::cout << "Test the session handle." << std::endl;
+	SNMPpp::netsnmpLogSyslog();
 
 	// UDP ones are unlikely to throw, since there is no SYN we wont know if it fails until we try to use it
 	checkSession( "udp:127.0.0.1:161" );
@@ -50,6 +54,6 @@ int main( int argc, char *argv[] )
 	checkSession( "foobar", true );
 
 	checkSession( "udp6:[::1]:161" );	// loopback IPv6 address
-	
+
 	return 0;
 }

@@ -147,6 +147,29 @@ SNMPpp::PDU &SNMPpp::PDU::setVarlist( netsnmp_variable_list *vl )
 }
 
 
+size_t SNMPpp::PDU::size( void ) const
+{
+	if ( pdu == NULL || pdu->variables == NULL )
+	{
+		return 0;
+	}
+
+	return varlist().size();
+}
+
+
+bool SNMPpp::PDU::contains( const SNMPpp::OID &o )	const
+{
+	bool found = false;
+	if ( ! empty() )
+	{
+		found = varlist().contains( o );
+	}
+
+	return found;
+}
+
+
 SNMPpp::PDU &SNMPpp::PDU::addNullVar( const SNMPpp::OID &o )
 {
 	netsnmp_variable_list *vl = varlist().addNullVar( o );
@@ -185,7 +208,14 @@ SNMPpp::PDU &SNMPpp::PDU::addNullVar( const SNMPpp::VecOID &v )
 
 std::ostream &operator<<( std::ostream &os, const SNMPpp::PDU &pdu )
 {
-	os << "PDU is" << (pdu.empty() ? "" : " not") << " empty." << std::endl << pdu.varlist();
+	if ( pdu.empty() )
+	{
+		os << "PDU is empty." << std::endl;
+	}
+	else
+	{
+		os << pdu.varlist();
+	}
 
 	return os;
 }

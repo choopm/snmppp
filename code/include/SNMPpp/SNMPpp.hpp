@@ -16,9 +16,12 @@
 
 // include all of the SNMPpp #include files in the correct order so cyclic dependencies are avoided
 #include <SNMPpp/net-snmppp.hpp>
+#include <SNMPpp/Session.hpp>
 #include <SNMPpp/OID.hpp>
+#include <SNMPpp/Varlist.hpp>
 #include <SNMPpp/PDU.hpp>
 #include <SNMPpp/Get.hpp>
+#include <SNMPpp/Trap.hpp>
 
 
 namespace SNMPpp

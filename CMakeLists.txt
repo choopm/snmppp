@@ -15,6 +15,8 @@ SET ( SNMPPP_VER_MINOR 0 )
 SET ( SNMPPP_VER_PATCH 2 )
 SET ( SNMPPP_VERSION "${SNMPPP_VER_MAJOR}.${SNMPPP_VER_MINOR}.${SNMPPP_VER_PATCH}" )
 
+ENABLE_TESTING ()
+
 SUBDIRS ( code )
 
 # dependencies were found by running this comand:  objdump --private-headers libsnmppp.so | grep NEEDED
