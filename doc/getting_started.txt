@@ -18,7 +18,7 @@ Quick guide on getting started with SNMPpp:
 	- cmake ..
 	- make
 
-Other possible targets include:  "sudo make install" or "make package".
+Other possible targets include:  "make test",  "sudo make install" or "make package".
 
 ==DIRECTORIES==
 
@@ -27,9 +27,10 @@ The code you likely want to build and/or link against is in the following two di
 	- code/src/*.cpp
 	- code/include/SNMPpp/*.hpp
 
-One additional directory to point out is a series of test cases and example code which can be easily referenced to get started:
+Other directories to point out is a series of examles and test cases which can be easily referenced to get started:
 
 	- code/examples/*.cpp
+	- code/test/*.cpp
 
 ==NET-SNMP==
 
@@ -42,12 +43,12 @@ The "Traditional API" is not thread-friendly, while the newer "Single API" can b
 The "Single API" typically has functions that start with "snmp_sess_".  For example:
 
 	TRADITIONAL					SINGLE API
-	snmp_sess_init()				snmp_sess_init()
+	snmp_sess_init()			snmp_sess_init()
 	snmp_open()					snmp_sess_open()
 	snmp_send()					snmp_sess_send()
 	snmp_read()					snmp_sess_read()
-	snmp_error()					snmp_sess_error()
+	snmp_error()				snmp_sess_error()
 
 
 Stéphane Charette <stephanecharette@gmail.com>
-2013-Feb-24.
+2013-Feb-26.
