@@ -7,6 +7,7 @@
 #include <string>
 #include <SNMPpp/OID.hpp>
 #include <SNMPpp/PDU.hpp>
+#include <SNMPpp/Varlist.hpp>
 #include <SNMPpp/net-snmppp.hpp>
 #include <sys/types.h>
 #include <time.h>
@@ -92,7 +93,7 @@ namespace SNMPpp
 	// describing the uptime and the trap, call this method.  Note you can
 	// use this to send as many additional OIDs as you want with the trap.
 	// The variable list is freed prior to returning.
-	void sendV2Trap( netsnmp_variable_list *vl );
+	void sendV2Trap( SNMPpp::Varlist &varlist );
 
 	// Similar to the previous one.  The PDU is freed prior to returning.
 	void sendV2Trap( SNMPpp::PDU &pdu );
@@ -101,5 +102,5 @@ namespace SNMPpp
 	// method as a starting point to create a varlist with the first two OIDs
 	// filled in correctly.  Once you finish adding variables to the varlist,
 	// call sendV2Trap( vl ) to have the trap sent out.
-	netsnmp_variable_list *createV2TrapVarlist( const SNMPpp::OID &o, const long uptime = SNMPpp::centisecondsNetSnmpUptime() );
+	SNMPpp::Varlist createV2TrapVarlist( const SNMPpp::OID &o, const long uptime = SNMPpp::centisecondsNetSnmpUptime() );
 };

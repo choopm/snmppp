@@ -27,7 +27,8 @@ namespace SNMPpp
 			virtual void clear( void ) { varlist = NULL; }
 
 			// easily convert it to the base net-snmp type for passing into net-snmp API
-			virtual operator netsnmp_variable_list*( void ) { return varlist; }
+			virtual operator netsnmp_variable_list* ( void ) { return  varlist; }	// can return NULL!
+			virtual operator netsnmp_variable_list**( void ) { return &varlist; }
 
 			virtual size_t size( void ) const { return count_varbinds( varlist ); } // O(n)
 			virtual bool  empty( void ) const { return varlist == NULL; }

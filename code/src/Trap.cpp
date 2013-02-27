@@ -3,7 +3,6 @@
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
 #include <SNMPpp/Trap.hpp>
-#include <SNMPpp/PDU.hpp>
 #include <sys/stat.h>
 #include <sys/sysinfo.h>
 #include <unistd.h>
@@ -124,29 +123,29 @@ long SNMPpp::centisecondsUptime( void )
 
 void SNMPpp::sendV2Trap( const SNMPpp::OID &o, const long uptime )
 {
-	netsnmp_variable_list *vl = SNMPpp::createV2TrapVarlist( o, uptime );
-	sendV2Trap( vl );
+	SNMPpp::Varlist varlist = SNMPpp::createV2TrapVarlist( o, uptime );
+	sendV2Trap( varlist );
 
 	return;
 }
 
 
-void SNMPpp::sendV2Trap( netsnmp_variable_list *vl )
+void SNMPpp::sendV2Trap( SNMPpp::Varlist &varlist )
 {
-	if ( vl == NULL )
+	if ( varlist.empty() )
 	{
 		throw std::invalid_argument( "Cannot send SNMPv2 trap using a NULL variable list." );
 	}
 
 	// at the very least, must have the uptime and trap oid, so size should be >= 2
-	if ( count_varbinds( vl ) < 2 )
+	if ( varlist.size() < 2 )
 	{
-		snmp_free_varbind( vl );
+		varlist.free();
 		throw std::invalid_argument( "Variable list is too small to be a valid SNMPv2 trap." );
 	}
 
-	const int rc = netsnmp_send_traps( -1, -1, NULL, 0, vl, NULL, 0 );
-	snmp_free_varbind( vl );
+	const int rc = netsnmp_send_traps( -1, -1, NULL, 0, varlist, NULL, 0 );
+	varlist.free();
 
 	if ( rc )
 	{
@@ -154,7 +153,7 @@ void SNMPpp::sendV2Trap( netsnmp_variable_list *vl )
 		ss	<< "Failed to send trap (rc=" << rc << ").";
 		throw std::runtime_error( ss.str() );
 	}
-	
+
 	return;
 }
 
@@ -170,17 +169,17 @@ void SNMPpp::sendV2Trap( SNMPpp::PDU &pdu )
 	// steal the variable list from the PDU, free the gutted PDU, then send
 	// out the trap using the variable list that was stolen from the PDU
 	netsnmp_pdu *p = pdu;
-	netsnmp_variable_list *vl = p->variables;
+	SNMPpp::Varlist varlist( p->variables );
 	p->variables = NULL;
 	pdu.free();
 
-	sendV2Trap( vl );
+	sendV2Trap( varlist );
 
 	return;
 }
 
 
-netsnmp_variable_list *SNMPpp::createV2TrapVarlist( const SNMPpp::OID &o, const long uptime )
+SNMPpp::Varlist SNMPpp::createV2TrapVarlist( const SNMPpp::OID &o, const long uptime )
 {
 	// RFC 2576 states:
 	//
@@ -204,10 +203,10 @@ netsnmp_variable_list *SNMPpp::createV2TrapVarlist( const SNMPpp::OID &o, const 
 
 	const SNMPpp::OID sysUpTime	( OID::kSysUpTime	); // set this to centiseconds
 	const SNMPpp::OID trap		( OID::kTrap			); // set this to the OID you want to send out
-	
-	netsnmp_variable_list *vl = NULL;
-	snmp_varlist_add_variable( &vl, sysUpTime, sysUpTime, ASN_TIMETICKS, (unsigned char*)&uptime, sizeof(uptime)	);
-	snmp_varlist_add_variable( &vl, trap, trap, ASN_OBJECT_ID, o, o.size() * sizeof(unsigned long) );
 
-	return vl;
+	SNMPpp::Varlist varlist;
+	snmp_varlist_add_variable( varlist, sysUpTime, sysUpTime, ASN_TIMETICKS, (unsigned char*)&uptime, sizeof(uptime)	);
+	snmp_varlist_add_variable( varlist, trap, trap, ASN_OBJECT_ID, o, o.size() * sizeof(unsigned long) );
+
+	return varlist;
 }

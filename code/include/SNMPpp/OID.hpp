@@ -49,7 +49,7 @@ namespace SNMPpp
 
 			// initialize using the net-snmp "oid *" array
 			OID( const unsigned long *l, const size_t len );
-			OID( const netsnmp_variable_list *vl );
+			explicit OID( const netsnmp_variable_list *vl ); // "explicit" to prevent accidentally converting an entire SNMPpp::Varlist to single OID
 
 			// convert the OID to the familiar numeric format, such as ".1.3.6.1.4.x.x.x"
 			virtual operator std::string( void ) const;
