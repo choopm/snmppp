@@ -32,6 +32,14 @@ The default snmpd configuration file only provides a very small subset of the SN
 	- to see the short name:          snmpwalk -c public -v 2c -OS 127.0.0.1 .1
 	- to see the full name:           snmpwalk -c public -v 2c -Ou 127.0.0.1 .1
 
+The default snmpd configuration file only starts snmpd, not snmptrapd.  To enable snmptrapd:
+
+	- edit /etc/default/snmpd
+	- look for this line:    TRAPDRUN=no
+	- change it like this:   TRAPDRUN=yes
+	- while at it, find:     export MIBS=
+    - change it to this:     #export MIBS=
+
 The default snmpd configuration file will create the AgentX socket so only processes running as "root" can connect to it.  This means if you want to send out a trap, as soon as you try to make calls such as SNMPpp::initializeNetSnmpAgent() you'll see errors such as this:
 
 	No log handling enabled - turning on stderr logging
