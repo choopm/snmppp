@@ -42,6 +42,7 @@ void SNMPpp::initializeNetSnmpAgent( const std::string &name )
 		ss << "]";
 
 		free( msg );
+		/// @throw std::runtime_error if net-snmp init_agent(name) returned an error.
 		throw std::runtime_error( ss.str() );
 	}
 
@@ -73,6 +74,10 @@ long SNMPpp::centisecondsSince( const time_t t )
 		return 0L;
 	}
 
+	/** @return the number of centiseconds (1/100s) that have elapsed since the
+	 * given time.  If the specified time is in the future, then `zero` is
+	 * returned.
+	 */
 	return 100L * ( now - t );
 }
 
@@ -94,19 +99,41 @@ long SNMPpp::centisecondsPidStarted( pid_t pid )
 	struct stat buf = {0};
 	if ( stat( path, &buf ) != 0 )
 	{
-		// something went wrong -- we have no idea what time to use
+		/** @return If the pid uptime is unavailable or cannot be found, then
+		 * SNMPpp::centisecondsNetSnmpUptime() is returned instead.
+		 */
 		return centisecondsNetSnmpUptime();
 	}
 
+	/** @return If the pid uptime was determined, return the number of
+	 * centiseconds (1/100s) since the given PID was started.
+	*/
 	return centisecondsSince( buf.st_ctime );
 }
 
 
 long SNMPpp::centisecondsNetSnmpUptime( void )
 {
-	// return the number of centiseconds (1/100s) given by net-snmp's get_uptime()
+	/** @details
+	 * The first variable in SNMPv2 traps is 'sysUpTime', which is defined as:
+	 *
+	 * 		"the time ... since the network management portion of the system was re-initialized"
+	 *
+	 * But in all likelihood, this value isn't easily available from code which
+	 * is using SNMPpp.  So several other possibly useful values have been made
+	 * available for convenience.  Of those, centisecondsNetSnmpUptime() is
+	 * most likely the value you need to use.
+	 */
+
+	/** @todo What does netsnmp_get_agent_uptime(); return?  I tried both
+	 * get_uptime() and netsnmp_get_agent_uptime() but as far as I can tell the
+	 * one called netsnmp_get_agent_uptime() returns garbage.
+	 */
+
+	/** @return net-snmp's get_uptime(), which on linux seems to be the number
+	 * of centiseconds since the system was rebooted.
+	 */
 	return get_uptime();
-	// TODO:  what does this one return:  netsnmp_get_agent_uptime();
 }
 
 
@@ -132,8 +159,11 @@ void SNMPpp::sendV2Trap( const SNMPpp::OID &o, const long uptime )
 
 void SNMPpp::sendV2Trap( SNMPpp::Varlist &varlist )
 {
+	/// @see SNMPpp::createV2TrapVarlist();
+
 	if ( varlist.empty() )
 	{
+		/// @throw std::invalid_argument if varlist is empty.
 		throw std::invalid_argument( "Cannot send SNMPv2 trap using a NULL variable list." );
 	}
 
@@ -141,6 +171,7 @@ void SNMPpp::sendV2Trap( SNMPpp::Varlist &varlist )
 	if ( varlist.size() < 2 )
 	{
 		varlist.free();
+		/// @throw std::invalid_argument if the varlist contains less than 2 OIDs.
 		throw std::invalid_argument( "Variable list is too small to be a valid SNMPv2 trap." );
 	}
 
@@ -151,6 +182,7 @@ void SNMPpp::sendV2Trap( SNMPpp::Varlist &varlist )
 	{
 		std::stringstream ss;
 		ss	<< "Failed to send trap (rc=" << rc << ").";
+		/// @throw std::runtime_error if netsnmp_send_traps(...) returned an error.
 		throw std::runtime_error( ss.str() );
 	}
 
@@ -163,6 +195,7 @@ void SNMPpp::sendV2Trap( SNMPpp::PDU &pdu )
 	if ( pdu.empty() )
 	{
 		pdu.free();
+		/// @throw std::invalid_argument if the PDU is empty.
 		throw std::invalid_argument( "Cannot send a trap using an empty PDU." );
 	}
 
@@ -198,6 +231,7 @@ SNMPpp::Varlist SNMPpp::createV2TrapVarlist( const SNMPpp::OID &o, const long up
 
 	if ( o.empty() )
 	{
+		/// @throw std::invalid_argument if the OID is empty.
 		throw std::invalid_argument( "Cannot create SNMPv2 trap without an OID." );
 	}
 

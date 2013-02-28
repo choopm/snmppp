@@ -13,20 +13,31 @@
 
 namespace SNMPpp
 {
-	// net-snmp handles PDUs in a strange manner.  Request PDUs are
-	// automatically freed by net-snmp when a requests are handled, but
-	// responses need to be manually freed by the caller.
-	//
-	// This C++ class wont try to somehow solve this issue.  So in the C++
-	// destructor ~PDU() don't expect the underlying pdu to be freed.  You
-	// still need to ensure request PDUs are not freed, and remember to free
-	// responses.  To free responses or unused request PDUs, call PDU::free()
-	// or net-snmp's snmp_free_pdu( pdu );
-
+	/** Wrapper for net-snmp's PDU structures.
+	 * 
+	 * These objects are extremely small (just a pointer) and can easily
+	 * be created on the stack or as a member of another class.
+	 *
+	 * Many other parts of SNMPpp can accept PDU objects by reference, and
+	 * PDU includes the necessary operators so they can be used wherever
+	 * net-snmp `netsnmp_pdu *` pointers are typically used.
+	 *
+	 * @note Request PDUs are automatically freed by net-snmp when requests
+	 * are handled, but responses typically need to be manually freed by the
+	 * caller to prevent memory leaks.
+	 *
+	 * This C++ class doesn't solve this problem.  In the C++ PDU destructor
+	 * don't expect the underlying pdu to be freed.  You still need to ensure
+	 * response PDUs are freed, either by calling SNMPpp::PDU::free() or
+	 * net-snmp's `snmp_free_pdu( pdu )`.
+	 */
 	class PDU
 	{
 		public:
 
+			/** When creating a new PDU, the type of PDU (how it will be used
+			 * needs to be declared so it can be created correctly.
+			 */
 			enum EType
 			{
 				kInvalid		= 0					,
@@ -43,46 +54,100 @@ namespace SNMPpp
 				kReport		= SNMP_MSG_REPORT		// ???
 			};
 
+			/** Destructor.
+			 */
 			virtual ~PDU( void );
-			PDU( const EType t );
-			PDU( netsnmp_pdu *p ); // inherit a PDU constructed elsewhere
 
-			// free up the underlying net-snmp structure: snmp_free_pdu(...)
+			/** Create a PDU of the given type.
+			 */
+			PDU( const EType t );
+
+			/** Inherit a PDU from net-snmp.  It is valid for `p` to be NULL.
+			 */
+			PDU( netsnmp_pdu *p );
+
+			/** Free up the underlying net-snmp structure using
+			 * `snmp_free_pdu()`.
+			 */
 			virtual void free( void );
 
-			// get the underlying PDU type
+			/** Get the PDU type.
+			 */
 			virtual EType getType( void ) const { return type; }
 
-			// if a net-snmp function has been called which we know has already
-			// freed the netsmp_pdu pointer, we call clear() to ensure the C++
-			// wrapper object doesn't keep the old pointer
+			/** If a net-snmp function has been called which we know has
+			 * already freed the PDU pointer, call clear() to ensure this C++
+			 * wrapper object doesn't keep the pointer to the old memory
+			 * location.
+			 * @note Don't miss the difference between clear() and free().
+			 * This one will leak memory if `snmp_free_pdu()` hasn't yet
+			 * been called.
+			 * @see free()
+			 */
 			virtual void clear( void );
 
-			// returns TRUE if the PDU or the varlist is NULL
+			/** Returns `TRUE` if the PDU or the varlist is `NULL`.
+			 */
 			virtual bool empty( void ) const;
 
-			// make a copy of this PDU: snmp_clone_pdu()
+			/** Make a copy of this PDU using `snmp_clone_pdu()`.  Both of the
+			 * PDU objects will eventually need to be freed.
+			 */
 			virtual PDU clone( void ) const;
 
-			// easily convert the PDU to the base net-snmp type for passing into net-snmp API
+			/** Convert the PDU to a net-snmp pointer for passing into the
+			 * net-snmp API.
+			 */
 			virtual operator netsnmp_pdu*( void ) { return pdu; }
 
-			// get access to the varlist for this PDU (these will throw if the PDU doesn't exist)
+			/** Get access to the varlist for this PDU.  This will throw if
+			 * the PDU is empty.
+			 */
 			virtual const SNMPpp::Varlist varlist( void ) const;
+
+			/** Get access to the varlist for this PDU.  This will throw if
+			 * the PDU is empty.
+			 */
 			virtual SNMPpp::Varlist varlist( void );
+
+			/** Get access to the varlist for this PDU.  This will throw if
+			 * the PDU is empty.
+			 */
 			virtual operator netsnmp_variable_list *( void );
 
-			// free the existing varlist and use this one instead
+			/** Free the existing variable list and use this one instead.
+			 */
 			virtual PDU &setVarlist( Varlist &vl );
+
+			/** Free the existing variable list and use this one instead.
+			 */
 			virtual PDU &setVarlist( netsnmp_variable_list *vl );
 
 			// for convenience, expose a few of the Varlist members we're likely to use in simple cases
 
+			/** Return the size of the variable list or zero if the PDU is empty.
+			 */
 			virtual size_t size		( void )					const;
+
+			/** Return `TRUE` if the variable list contains the given OID.
+			 */
 			virtual bool contains	( const SNMPpp::OID &o )	const;
+
+			/** Add an OID as ASN_NULL to the variable list.
+			 */
 			virtual PDU &addNullVar	( const SNMPpp::OID &o );
-			virtual PDU &addNullVar	( const SNMPpp::SetOID &s );
-			virtual PDU &addNullVar	( const SNMPpp::VecOID &v );
+
+			/** Add numerous OIDs to the variable list.
+			 * @see SNMPpp::PDU::addNullVar( const SNMPpp::OID &o )
+			 * @see SNMPpp::PDU::addNullVars( const SNMPpp::VecOID &v )
+			 */
+			virtual PDU &addNullVars	( const SNMPpp::SetOID &s );
+
+			/** Add numerous OIDs to the variable list.
+			 * @see SNMPpp::PDU::addNullVar( const SNMPpp::OID &o )
+			 * @see SNMPpp::PDU::addNullVars( const SNMPpp::SetOID &s )
+			 */
+			virtual PDU &addNullVars	( const SNMPpp::VecOID &v );
 
 		protected:
 
@@ -91,4 +156,8 @@ namespace SNMPpp
 	};
 };
 
+
+/** Can be used to log or display some debugging information on the PDU,
+ * including all OIDs contained within the Varlist.
+ */
 std::ostream &operator<<( std::ostream &os, const SNMPpp::PDU &pdu );

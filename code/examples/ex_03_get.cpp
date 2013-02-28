@@ -129,7 +129,7 @@ void example2GetBulk( SNMPpp::SessionHandle &sessionHandle )
 
 	// create a PDU and add the entire set of OIDs to it
 	SNMPpp::PDU pdu( SNMPpp::PDU::kGetBulk );
-	pdu.addNullVar( s );
+	pdu.addNullVars( s );
 
 	pdu = SNMPpp::getBulk( sessionHandle, pdu, 5 ); // the reply PDU should have 5 OIDs for each of the starting locations, for a total of 15 OIDs
 

@@ -100,9 +100,11 @@ SNMPpp::OID::operator const unsigned long *( void ) const
 
 	if ( empty() )
 	{
+		/// @return NULL if the OID is empty.
 		return NULL;
 	}
 
+	/// @return The address of the first value in the vector.
 	return &v[0];
 }
 

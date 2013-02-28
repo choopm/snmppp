@@ -8,11 +8,11 @@
 #include <SNMPpp/Session.hpp>
 
 
-void SNMPpp::openSession( SNMPpp::SessionHandle &handle, const std::string &server, const std::string &community, const int version, const int retryAttempts )
+void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::string &server, const std::string &community, const int version, const int retryAttempts )
 {
 	// make sure you call closeSession() to free up the handle before calling
 	// openSession() because we're about to overwrite any previous handles
-	handle = NULL;
+	sessionHandle = NULL;
 
 	netsnmp_session session = {0};
 	snmp_sess_init( &session );
@@ -23,8 +23,8 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &handle, const std::string &serv
 	session.community		= (unsigned char*)community.c_str();
 	session.community_len	= community.size();
 
-	handle = snmp_sess_open( &session );
-	if ( handle == NULL || snmp_sess_session( handle ) == NULL )
+	sessionHandle = snmp_sess_open( &session );
+	if ( sessionHandle == NULL || snmp_sess_session( sessionHandle ) == NULL )
 	{
 		// Don't use snmp_sess_error() if the problem is with snmp_sess_open()!
 		// Instead, fall back to the traditional snmp_error() and pass in the
@@ -46,6 +46,7 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &handle, const std::string &serv
 		ss << "]";
 
 		free( msg );
+		/// @throw std::runtime_error if snmp_sess_open() fails to return a valid new session.
 		throw std::runtime_error( ss.str() );
 	}
 
@@ -53,12 +54,12 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &handle, const std::string &serv
 }
 
 
-void SNMPpp::closeSession( SNMPpp::SessionHandle &handle )
+void SNMPpp::closeSession( SNMPpp::SessionHandle &sessionHandle )
 {
-	if ( handle )
+	if ( sessionHandle )
 	{
-		snmp_sess_close( handle );
-		handle = NULL;
+		snmp_sess_close( sessionHandle );
+		sessionHandle = NULL;
 	}
 
 	return;

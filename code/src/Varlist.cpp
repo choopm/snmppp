@@ -102,12 +102,14 @@ SNMPpp::Varlist &SNMPpp::Varlist::addNullVar( const SNMPpp::OID &o )
 {
 	if ( o.empty() )
 	{
+		/// @throw std::invalid_argument if the OID is empty.
 		throw std::invalid_argument( "Cannot add an empty OID." );
 	}
 
 	netsnmp_variable_list *p = snmp_varlist_add_variable( &varlist, o, o, ASN_NULL, 0, 0 );
 	if ( p == NULL )
 	{
+		/// @throw std::runtime_error if net-snmp failed to add the OID.
 		throw std::runtime_error( "Failed to add " + o.str() + " to the variable list." );
 	}
 
@@ -115,7 +117,7 @@ SNMPpp::Varlist &SNMPpp::Varlist::addNullVar( const SNMPpp::OID &o )
 }
 
 
-SNMPpp::Varlist &SNMPpp::Varlist::addNullVar( const SNMPpp::SetOID &s )
+SNMPpp::Varlist &SNMPpp::Varlist::addNullVars( const SNMPpp::SetOID &s )
 {
 	SNMPpp::SetOID::const_iterator iter;
 	for (	iter  = s.begin();
@@ -129,7 +131,7 @@ SNMPpp::Varlist &SNMPpp::Varlist::addNullVar( const SNMPpp::SetOID &s )
 }
 
 
-SNMPpp::Varlist &SNMPpp::Varlist::addNullVar( const SNMPpp::VecOID &v )
+SNMPpp::Varlist &SNMPpp::Varlist::addNullVars( const SNMPpp::VecOID &v )
 {
 	for ( size_t idx = 0; idx < v.size(); idx ++ )
 	{
@@ -154,6 +156,7 @@ const netsnmp_variable_list *SNMPpp::Varlist::at( const SNMPpp::OID &o ) const
 
 	if ( p == NULL )
 	{
+		/// @throw std::invalid_argument if the varlist does not contain the requested OID.
 		throw std::invalid_argument( "Varlist does not contain OID " + o.str() + "." );
 	}
 
@@ -165,6 +168,7 @@ SNMPpp::OID SNMPpp::Varlist::firstOID( void ) const
 {
 	if ( empty() )
 	{
+		/// @throw std::logic_error if the varlist is empty.
 		throw std::logic_error( "Cannot get an OID from an empty variable list." );
 	}
 
@@ -178,6 +182,7 @@ bool	 SNMPpp::Varlist::getBool( const SNMPpp::OID &o ) const
 
 	if ( vl->type != ASN_BOOLEAN )
 	{
+		/// @throw std::invalid_argument if the requested OID is not `ASN_BOOLEAN`.
 		throw std::invalid_argument( "OID " + o.str() + " is not a boolean type." );
 	}
 	
@@ -191,6 +196,7 @@ long	 SNMPpp::Varlist::getLong( const SNMPpp::OID &o ) const
 
 	if ( vl->type != ASN_INTEGER )
 	{
+		/// @throw std::invalid_argument if the requested OID is not `ASN_INTEGER`.
 		throw std::invalid_argument( "OID " + o.str() + " is not a numeric type." );
 	}
 
@@ -204,6 +210,7 @@ std::string SNMPpp::Varlist::getString( const SNMPpp::OID &o ) const
 
 	if ( vl->type != ASN_OCTET_STR )
 	{
+		/// @throw std::invalid_argument if the requested OID is not `ASN_OCTET_STR`.
 		throw std::invalid_argument( "OID " + o.str() + " is not a string." );
 	}
 
@@ -217,6 +224,7 @@ SNMPpp::OID SNMPpp::Varlist::getOID( const SNMPpp::OID &o ) const
 
 	if ( vl->type != ASN_OBJECT_ID )
 	{
+		/// @throw std::invalid_argument if the requested OID is not `ASN_OBJECT_ID`.
 		throw std::invalid_argument( "OID " + o.str() + " is not a OID." );
 	}
 	
@@ -249,6 +257,7 @@ std::string SNMPpp::Varlist::asString( const SNMPpp::OID &o ) const
 			break;
 		default:
 			// if you hit this exception, please go ahead and add whichever case you triggered
+			/// @throw std::invalid_argument if the requested OID is not one of the few simple types recognized by SNMPpp.
 			throw std::invalid_argument( "OID " + o.str() + " has no string representation." );
 	}
 	

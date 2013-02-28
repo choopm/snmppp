@@ -24,6 +24,7 @@ SNMPpp::PDU::PDU( const SNMPpp::PDU::EType t ) :
 	if ( pdu == NULL )
 	{
 		// throwing in a constructor is a bad idea
+		/// @throw std::runtime_error if snmp_pdu_create() cannot allocate the PDU.
 		throw std::runtime_error( "Failed to create a PDU." );
 	}
 
@@ -82,11 +83,6 @@ bool SNMPpp::PDU::empty( void ) const
 
 SNMPpp::PDU SNMPpp::PDU::clone( void ) const
 {
-	if ( pdu == NULL )
-	{
-		throw std::logic_error( "Cannot reference a NULL PDU." );
-	}
-
 	netsnmp_pdu *newpdu = snmp_clone_pdu( pdu );
 
 	return PDU( newpdu );
@@ -97,7 +93,13 @@ const SNMPpp::Varlist SNMPpp::PDU::varlist( void ) const
 {
 	if ( pdu == NULL )
 	{
+		/// @throw std::logic_error if the PDU is NULL.
 		throw std::logic_error( "Cannot reference a NULL PDU." );
+	}
+	if ( pdu->variables == NULL )
+	{
+		/// @throw std::logic_error if the PDU does not yet have a variable list.
+		throw std::logic_error( "The PDU does not contain a variable list." );
 	}
 
 	return SNMPpp::Varlist( pdu->variables );
@@ -106,9 +108,18 @@ const SNMPpp::Varlist SNMPpp::PDU::varlist( void ) const
 
 SNMPpp::Varlist SNMPpp::PDU::varlist( void )
 {
-	netsnmp_variable_list *vl = this->operator netsnmp_variable_list *();
+	if ( pdu == NULL )
+	{
+		/// @throw std::logic_error if the PDU is NULL.
+		throw std::logic_error( "Cannot reference a NULL PDU." );
+	}
+	if ( pdu->variables == NULL )
+	{
+		/// @throw std::logic_error if the PDU does not yet have a variable list.
+		throw std::logic_error( "The PDU does not contain a variable list." );
+	}
 
-	return SNMPpp::Varlist( vl );
+	return SNMPpp::Varlist( pdu->variables );
 }
 
 
@@ -116,6 +127,7 @@ SNMPpp::PDU::operator netsnmp_variable_list *( void )
 {
 	if ( pdu == NULL )
 	{
+		/// @throw std::logic_error if the PDU is NULL.
 		throw std::logic_error( "Cannot reference a NULL PDU." );
 	}
 
@@ -134,6 +146,7 @@ SNMPpp::PDU &SNMPpp::PDU::setVarlist( netsnmp_variable_list *vl )
 {
 	if ( pdu == NULL )
 	{
+		/// @throw std::logic_error if the PDU is NULL.
 		throw std::logic_error( "Cannot set variable list on a NULL PDU." );
 	}
 
@@ -172,34 +185,73 @@ bool SNMPpp::PDU::contains( const SNMPpp::OID &o )	const
 
 SNMPpp::PDU &SNMPpp::PDU::addNullVar( const SNMPpp::OID &o )
 {
-	netsnmp_variable_list *vl = varlist().addNullVar( o );
+	if ( pdu == NULL )
+	{
+		/// @throw std::logic_error if the PDU is NULL.
+		throw std::logic_error( "Cannot reference a NULL PDU." );
+	}
+
 	if ( pdu->variables == NULL )
 	{
-		pdu->variables = vl;
+		// if the PDU doesn't have a varlist, create a new one
+		SNMPpp::Varlist vl;
+		vl.addNullVar( o );
+		setVarlist( vl );
+	}
+	else
+	{
+		// ...otherwise, add to the existing varlist
+		varlist().addNullVar( o );
 	}
 
 	return *this;
 }
 
 
-SNMPpp::PDU &SNMPpp::PDU::addNullVar( const SNMPpp::SetOID &s )
+SNMPpp::PDU &SNMPpp::PDU::addNullVars( const SNMPpp::SetOID &s )
 {
-	netsnmp_variable_list *vl = varlist().addNullVar( s );
+	if ( pdu == NULL )
+	{
+		/// @throw std::logic_error if the PDU is NULL.
+		throw std::logic_error( "Cannot reference a NULL PDU." );
+	}
+
 	if ( pdu->variables == NULL )
 	{
-		pdu->variables = vl;
+		// if the PDU doesn't have a varlist, create a new one
+		SNMPpp::Varlist vl;
+		vl.addNullVars( s );
+		setVarlist( vl );
+	}
+	else
+	{
+		// ...otherwise, add to the existing varlist
+		varlist().addNullVars( s );
 	}
 
 	return *this;
 }
 
 
-SNMPpp::PDU &SNMPpp::PDU::addNullVar( const SNMPpp::VecOID &v )
+SNMPpp::PDU &SNMPpp::PDU::addNullVars( const SNMPpp::VecOID &v )
 {
-	netsnmp_variable_list *vl = varlist().addNullVar( v );
+	if ( pdu == NULL )
+	{
+		/// @throw std::logic_error if the PDU is NULL.
+		throw std::logic_error( "Cannot reference a NULL PDU." );
+	}
+	
 	if ( pdu->variables == NULL )
 	{
-		pdu->variables = vl;
+		// if the PDU doesn't have a varlist, create a new one
+		SNMPpp::Varlist vl;
+		vl.addNullVars( v );
+		setVarlist( vl );
+	}
+	else
+	{
+		// ...otherwise, add to the existing varlist
+		varlist().addNullVars( v );
 	}
 
 	return *this;

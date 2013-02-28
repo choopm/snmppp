@@ -4,7 +4,11 @@
 
 #pragma once
 
-// All net-snmp includes needed by SNMPpp are included here:
+/** @file net-snmppp.hpp
+ * All net-snmp includes needed by SNMPpp can be easily included by using
+ * net-snmppp.hpp.  No other SNMPpp source files should have to include
+ * additional net-snmp headers to compile SNMPpp.
+ */
 #include <stdlib.h> // needed by net-snmp/utilities.h
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/config_api.h>
@@ -17,21 +21,26 @@
 #include <net-snmp/agent/snmp_agent.h>
 #include <net-snmp/agent/snmp_vars.h>
 #include <net-snmp/agent/ds_agent.h>
-//#include <net-snmp/library/snmp_api.h>
-// That's it.  No other SNMPpp source files should have to include additional net-snmp headers.
 
 #include <string>
 
 
 namespace SNMPpp
 {
-	// several simple tweaks for net-snmp logging
-	// (more options available in <net-snmp/library/snmp_logging.h)
+	/** Disable net-snmp logging.
+	 * See net-snmp/library/snmp_logging.h for several more options.
+	 */
 	void netsnmpDisableLogging( void );
+
+	/** Toggle net-snmp logging to STDERR.
+	 */
 	void netsnmpLogStdErr( const bool enabled = true );
+
+	/** Toggle net-snmp logging to syslog.
+	 */
 	void netsnmpLogSyslog( const bool enabled = true );
+
+	/** Toggle net-snmp logging to an external file.
+	 */
 	void netsnmpLogToFile( const bool enabled = true, const std::string &filename = "/var/log/netsnmp.log" );
-	// Important note if using LogToFile:
-	//		net-snmp may not be running as "root".  Check your directory and
-	//		file write permissions if the log file you expect wasn't created.
 };

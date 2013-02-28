@@ -13,11 +13,13 @@ SNMPpp::PDU SNMPpp::sync( SNMPpp::SessionHandle &session, SNMPpp::PDU &request )
 	netsnmp_pdu *pdu = request;
 	if ( pdu == NULL )
 	{
+		/// @throw std::invalid_argument if the PDU is empty.
 		throw std::invalid_argument( "Request PDU must not be NULL." );
 	}
 	if ( session == NULL )
 	{
 		request.free();
+		/// @throw std::invalid_argument if the session handle is NULL.
 		throw std::invalid_argument( "Session handle must not be NULL." );
 	}
 
@@ -48,6 +50,7 @@ SNMPpp::PDU SNMPpp::sync( SNMPpp::SessionHandle &session, SNMPpp::PDU &request )
 
 		free( msg );
 		snmp_free_pdu( response );
+		/// @throw std::runtime_error if snmp_sess_synch_response() returned an error.
 		throw std::runtime_error( ss.str() );
 	}
 
@@ -65,6 +68,7 @@ SNMPpp::PDU SNMPpp::get( SNMPpp::SessionHandle &session, const SNMPpp::OID &o )
 {
 	if ( o.empty() )
 	{
+		/// @throw std::invalid_argument if the OID is empty.
 		throw std::invalid_argument( "OID cannot be empty." );
 	}
 
@@ -78,6 +82,7 @@ SNMPpp::PDU SNMPpp::getNext( SNMPpp::SessionHandle &session, const SNMPpp::OID &
 {
 	if ( o.empty() )
 	{
+		/// @throw std::invalid_argument if the OID is empty.
 		throw std::invalid_argument( "OID cannot be empty." );
 	}
 	
@@ -92,8 +97,29 @@ SNMPpp::PDU SNMPpp::getNext( SNMPpp::SessionHandle &session, SNMPpp::PDU &pdu )
 {
 	if ( pdu.empty() )
 	{
+		/// @throw std::invalid_argument if the PDU is empty.
 		throw std::invalid_argument( "Cannot GETNEXT with an empty PDU." );
 	}
+
+	/** @details
+	 * If the PDU is already of type SNMPpp::PDU::kGetNext then it is sent
+	 * unchanged to the server described in SNMPpp::SessionHandle.  But if the
+	 * PDU is of any other type -- such as a response PDU -- then we'll look
+	 * through the varlist and take the *last* OID listed.  Using this, a
+	 * response PDU can quickly be re-used to get the next OID from a SNMP
+	 * server.
+	 *
+	 * For example, note how the output PDU is then re-used as input in this
+	 * simple `while` loop:
+	 *
+	 *		pdu.clear();
+	 *		pdu.addNullVar( ".1" );
+	 *		while ( true )
+	 *		{
+	 *			pdu = SNMPpp::getNext( sessionHandle, pdu );
+	 *			if ( ... )
+	 *		}
+	 */
 
 	if ( pdu.getType() == SNMPpp::PDU::kGetNext )
 	{
@@ -119,6 +145,7 @@ SNMPpp::PDU SNMPpp::get( SNMPpp::SessionHandle &session, const SetOID &oids )
 {
 	if ( oids.empty() )
 	{
+		/// @throw std::invalid_argument if the SetOID is empty.
 		throw std::invalid_argument( "Cannot GET an empty set of OIDs." );
 	}
 
@@ -150,6 +177,7 @@ SNMPpp::PDU SNMPpp::getBulk( SNMPpp::SessionHandle &session, SNMPpp::PDU &pdu, c
 	netsnmp_pdu *p = pdu;
 	if ( p == NULL )
 	{
+		/// @throw std::invalid_argument if the PDU is empty.
 		throw std::invalid_argument( "Request PDU must not be NULL." );
 	}
 
@@ -161,7 +189,7 @@ SNMPpp::PDU SNMPpp::getBulk( SNMPpp::SessionHandle &session, SNMPpp::PDU &pdu, c
 		pdu.free();
 
 		pdu = SNMPpp::PDU( SNMPpp::PDU::kGetBulk );
-		pdu.addNullVar( s );
+		pdu.addNullVars( s );
 		p = pdu;
 	}
 

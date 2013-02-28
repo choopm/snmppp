@@ -14,121 +14,268 @@
 
 namespace SNMPpp
 {
+	/** Wrapper for net-snmp's OID arrays.
+	 * 
+	 * These objects are extremely small (just a std::vector) and can easily
+	 * be created on the stack or as a member of another class.
+	 *
+	 * Many other parts of SNMPpp can accept OID objects by reference, and
+	 * OID includes the necessary operators so they can be used wherever
+	 * net-snmp `oid` arrays are typically used.
+	 */
 	class OID
 	{
 		public:
 
+			/** An enum to represent some of the common OIDs applications may
+			 * need.
+			 * Value					| Oid
+			 * -----					| ---
+			 * kEmpty				| n/a
+			 * kInternet				| .1.3.6
+			 * kPrivateEnterprise	| .1.3.6.1.4
+			 * kSysUpTime			| .1.3.6.1.2.1.1.3.0
+			 * kTrap					| .1.3.6.1.6.3.1.1.4.1.0
+			 */
 			enum ECommon
 			{
 				// several common locations useful as a starting point
 				kInvalid				= 0,
 				kEmpty				= 1,
-				kInternet			= 2,		// .1.3.6
-				kPrivateEnterprise	= 3,		// .1.3.6.1.4
-				kSysUpTime			= 4,		// .1.3.6.1.2.1.1.3.0
-				kTrap				= 5		// .1.3.6.1.6.3.1.1.4.1.0
+				kInternet			= 2,
+				kPrivateEnterprise	= 3,
+				kSysUpTime			= 4,
+				kTrap				= 5
 			};
 
+			/** Destructor.
+			 */
 			virtual ~OID( void );
 
-			// empty OID, does not have any value:
-			//		OID oid1;
+			/** Empty OID, does not have any value.
+			 * For example:
+			 *
+			 *		OID oid1;
+			 */
 			OID( void );
 
-			// copy an OID from an existing object
+			/** Copy an OID from an existing object.
+			 */
 			OID( const OID &oid );
 
-			// initialize using a text string with the familiar numeric value:
-			//		OID oid( ".1.3.6.1.4" );
+			/** Initialize using a text string with the familiar numeric value.
+			 * For example:
+			 *
+			 *		OID oid1( ".1.3.6.1.4" );
+			 */
 			OID( const char * const s );
+
+			/** Similar to OID( const char * const s ).
+			 */
 			OID( const std::string &s );
 
-			// initialize using one of the common SNMP OID locations
-			//		OID oid( SNMPpp::OID::kInternet ); // .1.3.6
+			/** Construct an OID from one of the few common locations described by SNMPpp::OID::ECommon.
+			 * For example:
+			 *
+			 *		OID oid1( SNMPpp::OID::kInternet ); // .1.3.6
+			 */
 			OID( const SNMPpp::OID::ECommon &location );
 
-			// initialize using the net-snmp "oid *" array
+			/** Construct an OID using a net-snmp `oid` array.
+			 */
 			OID( const unsigned long *l, const size_t len );
-			explicit OID( const netsnmp_variable_list *vl ); // "explicit" to prevent accidentally converting an entire SNMPpp::Varlist to single OID
 
-			// convert the OID to the familiar numeric format, such as ".1.3.6.1.4.x.x.x"
+			/** Construct an OID from the first OID in the given variable list
+			 * pointer.  It is perfectly valid to use a NULL pointer.
+			 *
+			 * This constructor is `explicit` to prevent accidentally
+			 * converting an entire SNMPpp::Varlist to a single OID.  It
+			 * requires and explicit netsnmp_variable_list * pointer.
+			 */
+			explicit OID( const netsnmp_variable_list *vl );
+
+			/** Convert the OID to the familiar numeric format, such as `.1.3.6.1.4.x.x.x`.
+			 */
 			virtual operator std::string( void ) const;
+
+			/** Alias to operator std::string() for convenience.  Sometimes it
+			 * is cleaner to call str() than the wordier `operator...()`.
+			 */
 			virtual std::string str( void ) const { return operator std::string(); }
 
-			// convert the OID to an array of unsigned longs ("oid *") the way net-snmp needs
+			/** Convert the OID to an array of unsigned longs (aka `oid *`)
+			 * the way net-snmp needs for most API calls.
+			 */
 			virtual operator const unsigned long *( void ) const;
 
-			// some of the net-snmp API calls convert everything to uchar*
+			/** Convert the OID to a `uchar*` the way a few of the net-snmp API
+			 * requires.
+			 */
 			virtual operator const unsigned char *( void ) const { return (unsigned char *)operator const unsigned long *(); }
 
-			// clear the OID value in the object (clear the vector)
+			/** Clear the OID value in the object (clears the vector).
+			 */
 			virtual OID &clear( void );
 
-			// return TRUE if the OID object is empty (no OID values specified)
+			/** Return `TRUE` if the OID object is completely empty.
+			 */
 			virtual bool empty( void ) const { return v.empty(); }
 
-			// return TRUE if the OID object is not empty
+			/** Return `TRUE` if the OID object is not empty.
+			 */
 			virtual operator bool( void ) const { return ! empty(); }
 
-			// return the number of values in the OID vector
-			//
-			// remember this is the number of UNSIGNED LONG, while some of the
-			// net-snmp API calls expect the number of bytes, in which case you
-			// must multiply by sizeof(ulong)
+			/** Return the number of values in the OID vector.
+			 * @note Remember this is the number of `unsigned long`, while some
+			 * of the net-snmp API calls expect the number of bytes, in which
+			 * case you must multiply by `sizeof(ulong)`.
+			 */
 			virtual operator size_t	( void ) const { return v.size(); }
+
+			/** Alias for operator size_t().
+			 */
 			virtual size_t size		( void ) const { return v.size(); }
+
+			/** Alias for operator size_t().
+			 */
 			virtual size_t len		( void ) const { return v.size(); }
 
-			// need the ability to order OIDs so they can be stored in maps and sets
-			// (if we do operator<() we may as well include the other ones to be complete)
+			/** Comparison operator for OIDs.
+			 */
 			virtual bool operator< ( const SNMPpp::OID &rhs ) const { return v <  rhs.v; }
+
+			/** Comparison operator for OIDs.
+			 */
 			virtual bool operator<=( const SNMPpp::OID &rhs ) const { return v <= rhs.v; }
+
+			/** Comparison operator for OIDs.
+			 */
 			virtual bool operator> ( const SNMPpp::OID &rhs ) const { return v >  rhs.v; }
+
+			/** Comparison operator for OIDs.
+			 */
 			virtual bool operator>=( const SNMPpp::OID &rhs ) const { return v >= rhs.v; }
+
+			/** Comparison operator for OIDs.
+			 */
 			virtual bool operator==( const SNMPpp::OID &rhs ) const { return v == rhs.v; }
+
+			/** Comparison operator for OIDs.
+			 */
 			virtual bool operator!=( const SNMPpp::OID &rhs ) const { return v != rhs.v; }
 
-			// append a single numeric value to the end of the existing OID
-			//		OID oid( ".1.3.6" );
-			//		oid += 1;				// == .1.3.6.1
-			virtual OID  operator+ ( const unsigned long l ) const;
+			/** Append a single numeric value and return a new OID.
+			 * For example:
+			 *
+			 *		OID oid1( ".1.3.6" );
+			 *		OID oid2 = oid1 + 1;		// == .1.3.6.1
+			 */
+			virtual OID operator+ ( const unsigned long l ) const;
+
+			/** Append a single numeric value to the current OID.
+			 * For example:
+			 *
+			 *		OID oid1( ".1.3.6" );
+			 *		oid1 += 1;				// == .1.3.6.1
+			 */
 			virtual OID &operator+=( const unsigned long l );
 
-			// append one or more numeric values to the end of the existing OID
-			//		OID oid( ".1.3.6" );
-			//		oid += ".1.4";			// == .1.3.6.1.4
+			/** Append one or more values and return a new OID.
+			 * For example:
+			 *
+			 *		OID oid1( ".1.3.6" );
+			 *		OID oid2 = oid1 + ".1.4";		// == .1.3.6.1.4
+			 */
 			virtual OID  operator+ ( const std::string &s ) const;
+
+			/** Append one or more values to the current OID.
+			 * For example:
+			 *
+			 *		OID oid1( ".1.3.6" );
+			 *		oid1 += ".1.4";			// == .1.3.6.1.4
+			 */
 			virtual OID &operator+=( const std::string &s );
 
-			// reuse an OID by setting the numeric value as indicated
+			/** Reuse an OID object by setting the numeric values as indicated.
+			 */
 			virtual OID &set( const OID &oid );
+
+			/** Reuse an OID object by setting the numeric values as indicated.
+			 */
 			virtual OID &set( const char * const s );
+
+			/** Reuse an OID object by setting the numeric values as indicated.
+			 */
 			virtual OID &set( const std::string &s );
+
+			/** Reuse an OID object by setting the numeric values as indicated.
+			 */
 			virtual OID &set( const SNMPpp::OID::ECommon &location );
+
+			/** Alias for SNMPpp::OID::set().
+			 */
 			virtual OID &operator=( const std::string &s ) { return set( s ); }
+
+			/** Alias for SNMPpp::OID::set().
+			 */
 			virtual OID &operator=( const char * const s ) { return set( s ); }
 
-			// is this object a child of "rhs"?  (note this includes grandchildren, etc)
-			//
-			//		OID oid( ".1.3.6.4.1" );
-			//		...
-			//		if ( oid.isChildOf( ".1.3.6" )	// == TRUE
+			/** Similar to SNMPpp::OID::isImmediateChildOf().  But this
+			 * includes grandchildren, etc.  For example:
+			 *
+			 * 		OID oid( ".1.3.6.4.1" );
+			 * 		...
+			 * 		if ( oid.isChildOf( ".1.3.6" )  // == TRUE
+			 *
+			 * @see SNMPpp::OID::isImmediateChildOf()
+			 * @see SNMPpp::OID::isImmediateParentOf()
+			 * @see SNMPpp::OID::isParentOf()
+			 */
 			virtual bool isChildOf(  const SNMPpp::OID &rhs ) const;
 
-			// is this object the parent of "rhs"?  (note this includes grandparents, etc)
-			//
-			//		OID oid( ".1.3.6" );
-			//		if ( oid.isParentOf( "1.3.6.4.1" )	// == TRUE
+			/** Similar to SNMPpp::OID::isImmediateParentOf().  But this
+			 * includes grandparents, etc.  For example:
+			 *
+			 * 		OID oid( ".1.3.6" );
+			 * 		if ( oid.isParentOf( "1.3.6.4.1" )  // == TRUE
+			 *
+			 * @see SNMPpp::OID::isImmediateChildOf()
+			 * @see SNMPpp::OID::isImmediateParentOf()
+			 * @see SNMPpp::OID::isChildOf()
+			 */
 			virtual bool isParentOf( const SNMPpp::OID &rhs ) const;
 
-			// same as isChildOf() and isParentOf(), but the child<->parent relationship must be exact
-			//
-			//		OID oid( ".1.3.6.4.1" );
-			//		...
-			//		if ( oid.isImmediateChildOf( "1.3.6" )	// == FALSE
-			//		...
-			//		if ( oid.isImmediateChildOf( "1.3.6.4" )	// == TRUE
+			/** Similar to SNMPpp::OID::isChildOf().  The child<->parent
+			 * relationship must be exact.  Grandparents and grandchildren
+			 * will return `FALSE`.  For example:
+			 *
+			 * 		OID oid( ".1.3.6.4.1" );
+			 * 		...
+			 * 		if ( oid.isImmediateChildOf( "1.3.6" )    // == FALSE
+			 * 		...
+			 * 		if ( oid.isImmediateChildOf( "1.3.6.4" )  // == TRUE
+			 *
+			 * @see SNMPpp::OID::isImmediateParentOf()
+			 * @see SNMPpp::OID::isChildOf()
+			 * @see SNMPpp::OID::isParentOf()
+			 */
+
 			virtual bool isImmediateChildOf ( const SNMPpp::OID &rhs ) const;
+
+			/** Similar to SNMPpp::OID::isParentOf().  The child<->parent
+			 * relationship must be exact.  Grandparents and grandchildren
+			 * will return `FALSE`.  For example:
+			 *
+			 * 		OID oid( ".1.3.6" );
+			 * 		...
+			 * 		if ( oid.isImmediateParentOf( "1.3.6.4.1" )   // == FALSE
+			 * 		...
+			 * 		if ( oid.isImmediateParentOf( "1.3.6.4" )     // == TRUE
+			 *
+			 * @see SNMPpp::OID::isImmediateChildOf()
+			 * @see SNMPpp::OID::isChildOf()
+			 * @see SNMPpp::OID::isParentOf()
+			 */
 			virtual bool isImmediateParentOf( const SNMPpp::OID &rhs ) const;
 
 		protected:
@@ -136,12 +283,22 @@ namespace SNMPpp
 			std::vector < unsigned long > v;
 	};
 
+	/** A std::set of OIDs.
+	 */
 	typedef std::set   <OID> SetOID;
+
+	/** A std::vector of OIDs.
+	 */
 	typedef std::vector<OID> VecOID;
 
-	// This map isn't used by OID, but instead by PDU and Varlist.  The
-	// map key is the OID though, so it is defined here for convenience.
+	/** A std::map where the OID is the key and the value is a net-snmp
+	 * variable list.  This is used by SNMPpp::PDU and SNMPpp::Varlist.
+	 */
 	typedef std::map < SNMPpp::OID, netsnmp_variable_list *> MapOidVarList;
 };
 
+
+/** Can be used to log or display an OID.  This does the exact same thing
+ * as calling SNMPpp::OID::str().
+ */
 std::ostream &operator<<( std::ostream &os, const SNMPpp::OID &o );

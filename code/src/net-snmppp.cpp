@@ -47,6 +47,11 @@ void SNMPpp::netsnmpLogSyslog( const bool enabled )
 
 void SNMPpp::netsnmpLogToFile( const bool enabled, const std::string &filename )
 {
+	/** @note net-snmp may not be running as "root", and may not have access
+	 * to the file it is being told to use to log.  Check your directory and
+	 * file write permissions if the log file you expect wasn't created.
+	 */
+
 	if ( enabled && ! filename.empty() )
 	{
 		init_snmp_logging();
