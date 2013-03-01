@@ -74,7 +74,8 @@ namespace SNMPpp
 			virtual operator netsnmp_variable_list**( void ) { return &varlist; }
 
 			/** Return the number of variables in this object.  Runs in O(n) as
-			 * it needs to traverse the entire linked list of OIDs.
+			 * it needs to traverse the entire linked list every time it is
+			 * called.  (The size is not cached anywhere in Varlist.)
 			 */
 			virtual size_t size( void ) const { return count_varbinds( varlist ); }
 
@@ -136,6 +137,10 @@ namespace SNMPpp
 			 */
 			virtual const netsnmp_variable_list *at( const SNMPpp::OID &o ) const;
 
+			/** Return the [N]th netsnmp_variable_list pointer.
+			 */
+			virtual const netsnmp_variable_list *operator[]( const size_t idx ) const;
+			
 			/** Return the first OID object in the varlist.  This will throw if
 			 * the varlist is empty.
 			 */

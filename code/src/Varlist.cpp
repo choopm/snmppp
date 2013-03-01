@@ -164,6 +164,28 @@ const netsnmp_variable_list *SNMPpp::Varlist::at( const SNMPpp::OID &o ) const
 }
 
 
+const netsnmp_variable_list *SNMPpp::Varlist::operator[]( const size_t idx ) const
+{
+	if ( idx >= size() )
+	{
+		/// @throw std::invalid_argument if the index is larger than the variable list.
+		throw std::invalid_argument( "The index is larger than the number of variable list pointers." );
+	}
+
+	/** @details Runs in O(2n) since it needs to walk the linked list of
+	 * netsnmp_variable_list pointers twice every time it is called.
+	 * (The first is due to a call to size().)
+	 */
+	netsnmp_variable_list *p = varlist;
+	for ( size_t counter = 0; counter < idx; counter ++ )
+	{
+		p = p->next_variable;
+	}
+
+	return p;
+}
+
+
 SNMPpp::OID SNMPpp::Varlist::firstOID( void ) const
 {
 	if ( empty() )
