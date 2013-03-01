@@ -24,7 +24,7 @@ int main( int argc, char *argv[] )
 	std::cout << pdu << std::endl;
 
 	pdu.free();
-	
+
 	SNMPpp::closeSession( sessionHandle );
 
 	// sending out traps needs AgentX, not session handles

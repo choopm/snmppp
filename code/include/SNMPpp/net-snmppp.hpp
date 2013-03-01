@@ -15,6 +15,7 @@
 #include <net-snmp/output_api.h>
 #include <net-snmp/session_api.h>
 #include <net-snmp/varbind_api.h>
+#include <net-snmp/mib_api.h>
 #include <net-snmp/pdu_api.h>
 #include <net-snmp/utilities.h>
 #include <net-snmp/agent/agent_trap.h>

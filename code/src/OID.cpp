@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <sstream>
+#include <stdexcept>
 #include <SNMPpp/OID.hpp>
 
 
@@ -52,12 +53,12 @@ SNMPpp::OID::OID( const SNMPpp::OID::ECommon &location )
 }
 
 
-SNMPpp::OID::OID( const unsigned long *array, const size_t length )
+SNMPpp::OID::OID( const oid * o, const size_t length )
 {
 	v.reserve( length );
 	for ( size_t idx = 0; idx < length; idx ++ )
 	{
-		v.push_back( array[idx] );
+		v.push_back( o[idx] );
 	}
 
 	return;
@@ -93,11 +94,31 @@ SNMPpp::OID::operator std::string( void ) const
 }
 
 
-SNMPpp::OID::operator const unsigned long *( void ) const
+SNMPpp::OID::operator const oid *( void ) const
 {
+	// CONST version:
+	//
 	// net-snmp uses "unsigned long *" as OIDs, so this operator makes it easy
 	// and convenient to convert a C++ "OID" to a net-snmp "oid *".
 
+	if ( empty() )
+	{
+		/// @return NULL if the OID is empty.
+		return NULL;
+	}
+
+	/// @return The address of the first value in the vector.
+	return &v[0];
+}
+
+
+SNMPpp::OID::operator oid *( void )
+{
+	// NON-CONST version:
+	//
+	// net-snmp uses "unsigned long *" as OIDs, so this operator makes it easy
+	// and convenient to convert a C++ "OID" to a net-snmp "oid *".
+	
 	if ( empty() )
 	{
 		/// @return NULL if the OID is empty.
@@ -117,7 +138,7 @@ SNMPpp::OID &SNMPpp::OID::clear( void )
 }
 
 
-SNMPpp::OID SNMPpp::OID::operator+( const unsigned long l ) const
+SNMPpp::OID SNMPpp::OID::operator+( const oid o ) const
 {
 	// For example:
 	//
@@ -125,20 +146,20 @@ SNMPpp::OID SNMPpp::OID::operator+( const unsigned long l ) const
 	//		SNMPpp::OID oid2 = oid1 + 5;
 
 	OID newOid( *this );
-	newOid.v.push_back( l );
+	newOid.v.push_back( o );
 
 	return newOid;
 }
 
 
-SNMPpp::OID &SNMPpp::OID::operator+=( const unsigned long l )
+SNMPpp::OID &SNMPpp::OID::operator+=( const oid o )
 {
 	// For example:
 	//
 	//		SNMPpp::OID oid( ".1.2.3.4" );
 	//		oid += 5;
 
-	v.push_back( l );
+	v.push_back( o );
 
 	return *this;
 }
@@ -196,6 +217,18 @@ SNMPpp::OID &SNMPpp::OID::operator+=( const std::string &s )
 	v.swap( newOid.v );
 
 	return *this;
+}
+
+
+oid SNMPpp::OID::operator[]( const size_t idx ) const
+{
+	if ( idx >= v.size() )
+	{
+		/// @throw std::invalid_argument if the index is larger than the OID.
+		throw std::invalid_argument( "The index is beyond the end of OID \"" + str() + "\"." );
+	}
+
+	return v[idx];
 }
 
 
@@ -304,6 +337,159 @@ bool SNMPpp::OID::isImmediateChildOf( const SNMPpp::OID &rhs ) const
 bool SNMPpp::OID::isImmediateParentOf( const SNMPpp::OID &rhs ) const
 {
 	return rhs.isImmediateChildOf( *this );
+}
+
+
+SNMPpp::OID SNMPpp::OID::parent( const size_t level ) const
+{
+	/** @details
+	 * For example, if we have this:
+	 *
+	 *		SNMPpp::OID oid1( ".1.2.3.4.5" );
+	 *		SNMPpp::OID oid2 = oid1.parent();
+	 *		SNMPpp::OID oid3 = oid1.parent(3);
+	 *
+	 * ...then the value of oid2 will be `.1.2.3.4`,
+	 * and the value of oid3 will be `.1.2`.
+	 */
+
+	SNMPpp::OID o( *this );
+	if ( level >= o.size() )
+	{
+		/// @return If the level is greater than or equal to the number of values in the OID, then an empty OID is returned to the caller.
+		o.clear();
+	}
+	else
+	{
+		/// @return If the level is smaller than the number of values in the OID, then the vector is truncated by the appropriate amount and a new OID is returned to the caller.
+		o.v.resize( o.size() - level );
+	}
+
+	return o;
+}
+
+#include <iostream>
+std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) const
+{
+	/** @note If net-snmp hasn't yet been initialized, you must call
+	 *`netsnmp_init_mib()` prior to nameFromMib().  Otherwise the MIB files
+	 * haven't been loaded, and the OID wont map to a known name.
+	 *
+	 * The different lookup types determine how the name is shown:
+	 *
+	 * Value			| Meaning									| Example
+	 * -----			| -------									| -------
+	 * kLeafOnly		| Only the very last name is returned.		| .1.3.6.1 -> "internet"
+	 * kPartial		| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.internet"
+	 * kInverted		| The opposite of kPartial.					| .1.3.6.1 -> ".iso.org.dod.1"
+	 * kFull         | All names are looked up.					| .1.3.6.1 -> ".iso.org.dod.internet"
+	 *
+	 * If the MIB files haven't been installed or initialized, the same
+	 * example would look like this:
+	 *
+	 * Value			| Meaning									| Example
+	 * -----			| -------									| -------
+	 * kLeafOnly		| Only the very last name is returned.		| .1.3.6.1 -> "1"
+	 * kPartial		| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.1"
+	 * kInverted		| The opposite of kPartial.					| .1.3.6.1 -> ".1.3.6.1"
+	 * kFull         | All names are looked up.					| .1.3.6.1 -> ".1.3.6.1"
+	 */
+
+	if ( empty() )
+	{
+		// nothing for us to do
+		return "";
+	}
+
+	switch ( lookup )
+	{
+		case SNMPpp::OID::kLeafOnly:
+		case SNMPpp::OID::kPartial:
+		case SNMPpp::OID::kInverted:
+		case SNMPpp::OID::kFull:
+			break;
+		default:
+			/// @throw std::invalid_argument if the lookup type is not one of the 4 values described above.
+			throw std::invalid_argument( "Invalid lookup type for OID " + str() + "." );
+	}
+
+	std::vector<std::string> vstr, tmp;
+	vstr.reserve( v.size() );
+
+	// start by copying to vstr all the numeric values we have
+	for ( size_t idx = 0; idx < v.size(); idx ++ )
+	{
+		char buffer[10] = {0};
+		snprintf( buffer, sizeof(buffer), "%ld", v[idx] );
+		vstr.push_back( buffer );
+	}
+
+	// Start with the longest OID we have, and look it up in the MIBs to see
+	// if we can find a name.  If not, then take the parent OID and start the
+	// process over until we eventually find a match.
+
+	// get the OID which interests us and which needs to be looked up
+	const SNMPpp::OID o = parent( lookup == SNMPpp::OID::kInverted ? 1 : 0 );
+
+	if ( ! o.empty() )
+	{
+		// BEWARE:  get_tree() will return the closest match, not an exact
+		// match!  Meaning that if the mibs describe .1.2.3.4 and you ask for
+		// .1.2.3.4.5.6 you'll still get a valid "t" pointer back.  It is up
+		// to us afterwards to determine just how close of a match we've been
+		// given.
+		struct tree * t = get_tree( o, o, get_tree_head() );
+
+		while ( t != NULL && t->label != NULL )
+		{
+			// note how "tmp" is reversed -- it starts with the last entry, and then builds up to the root
+			tmp.push_back( t->label );
+			t = t->parent;
+		}
+	}
+
+	// now take the relevant names from tmp and insert them into the right location in vstr
+	for ( size_t idx = 0; idx < tmp.size(); idx ++ )
+	{
+		// for kLeakOnly and kPartial, we only want the very last name in the
+		// OID (meaning the first name in "tmp") so exit out of this loop if
+		// we're about to copy something other than the last name
+		if (		lookup == SNMPpp::OID::kLeafOnly	||
+				lookup == SNMPpp::OID::kPartial	)
+		{
+			if ( tmp.size() != vstr.size() || idx > 0 )
+			{
+				break;
+			}
+		}
+		vstr[ tmp.size() - idx - 1 ] = tmp[idx];
+	}
+
+	// now build up the string to represent what the caller wants
+	std::string name;
+	size_t idx = 0;
+	if ( lookup == kLeafOnly )
+	{
+		idx = v.size() - 1;
+	}
+	else
+	{
+		name = ".";
+	}
+	while( true )
+	{
+		name += vstr[ idx ];
+		idx ++;
+		if ( idx >= v.size() )
+		{
+			// we're done!
+			break;
+		}
+		// otherwise we put a "." at the end of the string prior to adding a new member
+		name += ".";
+	}
+
+	return name;
 }
 
 

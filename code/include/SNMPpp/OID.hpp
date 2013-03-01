@@ -27,12 +27,12 @@ namespace SNMPpp
 	{
 		public:
 
-			/** An enum to represent some of the common OIDs applications may
-			 * need.
+			/** An enum to represent some of the common OIDs applications may need.
+			 *
 			 * Value					| Oid
 			 * -----					| ---
 			 * kEmpty				| n/a
-			 * kInternet				| .1.3.6
+			 * kInternet				| .1.3.6.1
 			 * kPrivateEnterprise	| .1.3.6.1.4
 			 * kSysUpTime			| .1.3.6.1.2.1.1.3.0
 			 * kTrap					| .1.3.6.1.6.3.1.1.4.1.0
@@ -46,6 +46,25 @@ namespace SNMPpp
 				kPrivateEnterprise	= 3,
 				kSysUpTime			= 4,
 				kTrap				= 5
+			};
+
+			/** An enum to indicate what kind of name lookup is required when
+			 * calling SNMPpp::OID::nameFromMib().
+			 *
+			 * Value			| Meaning									| Example
+			 * -----			| -------									| -------
+			 * kLeafOnly		| Only the very last name is returned.		| .1.3.6.1 -> "internet"
+			 * kPartial		| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.internet"
+			 * kInverted		| The opposite of kPartial.					| .1.3.6.1 -> ".iso.org.dod.1"
+			 * kFull         | All names are looked up.					| .1.3.6.1 -> ".iso.org.dod.internet"
+			 */
+			enum ENameLookup
+			{
+				kUnknown				= 0,
+				kLeafOnly			= 1,
+				kPartial				= 2,
+				kInverted			= 3,
+				kFull				= 4
 			};
 
 			/** Destructor.
@@ -83,7 +102,7 @@ namespace SNMPpp
 
 			/** Construct an OID using a net-snmp `oid` array.
 			 */
-			OID( const unsigned long *l, const size_t len );
+			OID( const oid * o, const size_t len );
 
 			/** Construct an OID from the first OID in the given variable list
 			 * pointer.  It is perfectly valid to use a NULL pointer.
@@ -103,15 +122,20 @@ namespace SNMPpp
 			 */
 			virtual std::string str( void ) const { return operator std::string(); }
 
+			/** Convert the const OID to an array of unsigned longs
+			 * (aka `oid *`) the way net-snmp needs for most API calls.
+			 */
+			virtual operator const oid *( void ) const;
+
 			/** Convert the OID to an array of unsigned longs (aka `oid *`)
 			 * the way net-snmp needs for most API calls.
 			 */
-			virtual operator const unsigned long *( void ) const;
+			virtual operator oid *( void );
 
 			/** Convert the OID to a `uchar*` the way a few of the net-snmp API
 			 * requires.
 			 */
-			virtual operator const unsigned char *( void ) const { return (unsigned char *)operator const unsigned long *(); }
+			virtual operator const unsigned char *( void ) const { return (unsigned char *)operator const oid *(); }
 
 			/** Clear the OID value in the object (clears the vector).
 			 */
@@ -170,7 +194,7 @@ namespace SNMPpp
 			 *		OID oid1( ".1.3.6" );
 			 *		OID oid2 = oid1 + 1;		// == .1.3.6.1
 			 */
-			virtual OID operator+ ( const unsigned long l ) const;
+			virtual OID operator+ ( const oid o ) const;
 
 			/** Append a single numeric value to the current OID.
 			 * For example:
@@ -178,7 +202,7 @@ namespace SNMPpp
 			 *		OID oid1( ".1.3.6" );
 			 *		oid1 += 1;				// == .1.3.6.1
 			 */
-			virtual OID &operator+=( const unsigned long l );
+			virtual OID &operator+=( const oid o );
 
 			/** Append one or more values and return a new OID.
 			 * For example:
@@ -195,6 +219,15 @@ namespace SNMPpp
 			 *		oid1 += ".1.4";			// == .1.3.6.1.4
 			 */
 			virtual OID &operator+=( const std::string &s );
+
+			/** Return the value at the specified index into the OID vector.
+			 * For example:
+			 *
+			 *		OID o( ".1.3.6" );
+			 *		if ( o[0] == 1 ) ...	// TRUE
+			 *		if ( o[2] != 6 ) ...	// FALSE
+			 */
+			virtual oid operator[]( const size_t idx ) const;
 
 			/** Reuse an OID object by setting the numeric values as indicated.
 			 */
@@ -278,9 +311,18 @@ namespace SNMPpp
 			 */
 			virtual bool isImmediateParentOf( const SNMPpp::OID &rhs ) const;
 
-		protected:
+			/** Get the parent OID.
+			 */
+			virtual OID parent( const size_t level=1 ) const;
 
-			std::vector < unsigned long > v;
+			/** Get the OID's name from MIB files (if possible).
+			 * @see SNMPpp::OID::ENameLookup
+			 */
+			virtual std::string nameFromMib( const SNMPpp::OID::ENameLookup lookup=SNMPpp::OID::kFull ) const;
+
+	protected:
+
+			std::vector < oid > v;
 	};
 
 	/** A std::set of OIDs.
