@@ -4,7 +4,6 @@
 
 #include <SNMPpp/Varlist.hpp>
 #include <stdexcept>
-#include <sstream>
 
 
 SNMPpp::Varlist::~Varlist( void )
@@ -164,20 +163,17 @@ const netsnmp_variable_list *SNMPpp::Varlist::at( const SNMPpp::OID &o ) const
 }
 
 
-const netsnmp_variable_list *SNMPpp::Varlist::operator[]( const size_t idx ) const
+netsnmp_variable_list *SNMPpp::Varlist::operator[]( const size_t idx )
 {
-	if ( idx >= size() )
-	{
-		/// @throw std::invalid_argument if the index is larger than the variable list.
-		throw std::invalid_argument( "The index is larger than the number of variable list pointers." );
-	}
-
-	/** @details Runs in O(2n) since it needs to walk the linked list of
-	 * netsnmp_variable_list pointers twice every time it is called.
-	 * (The first is due to a call to size().)
+	/**
+	 * @return Returns a NULL pointer if the index is larger than the number
+	 * of items in the variable list.
+	 *
+	 * @details Runs in O(n) since it needs to walk the linked list of
+	 * netsnmp_variable_list pointers.
 	 */
 	netsnmp_variable_list *p = varlist;
-	for ( size_t counter = 0; counter < idx; counter ++ )
+	for ( size_t counter = 0; p != NULL && counter < idx; counter ++ )
 	{
 		p = p->next_variable;
 	}
@@ -198,7 +194,7 @@ SNMPpp::OID SNMPpp::Varlist::firstOID( void ) const
 }
 
 
-bool	 SNMPpp::Varlist::getBool( const SNMPpp::OID &o ) const
+bool SNMPpp::Varlist::getBool( const SNMPpp::OID &o ) const
 {
 	const netsnmp_variable_list *vl = at( o );
 
@@ -207,7 +203,7 @@ bool	 SNMPpp::Varlist::getBool( const SNMPpp::OID &o ) const
 		/// @throw std::invalid_argument if the requested OID is not `ASN_BOOLEAN`.
 		throw std::invalid_argument( "OID " + o.str() + " is not a boolean type." );
 	}
-	
+
 	return *vl->val.integer == 1; // rfc1212, true=1, false=2
 }
 
@@ -257,33 +253,43 @@ SNMPpp::OID SNMPpp::Varlist::getOID( const SNMPpp::OID &o ) const
 std::string SNMPpp::Varlist::asString( const SNMPpp::OID &o ) const
 {
 	const netsnmp_variable_list *vl = at( o );
-	std::stringstream ss;
-	switch( vl->type )
+
+	u_char *buf = NULL;
+	size_t buf_len = 0;
+	size_t out_len = 0;
+	sprint_realloc_value( &buf, &buf_len, &out_len, 1, o, o, vl );
+
+	// The buffer should look something like one of these examples:
+	//
+	//		OID: iso.3.6.1.6.3.16.2.2.1
+	//		STRING: "The SNMP Management Architecture MIB."
+	//
+	// We need to extract the two parts -- the type followed by the value.
+
+	std::string asn( (char*) buf );
+	std::string txt( (char*) buf );
+
+	::free( buf );
+
+	size_t pos = asn.find( ": " );
+	if ( pos != std::string::npos )
 	{
-		case ASN_BOOLEAN:
-			ss << ( *vl->val.integer == 1 ? "true" : "false" );
-			break;
-		case ASN_INTEGER:
-			ss << vl->val.integer;
-			break;
-		case ASN_OCTET_STR:
-			ss << std::string( (const char *)vl->val.string, vl->val_len );
-			break;
-		case ASN_NULL:
-			break;
-		case ASN_OBJECT_ID:
-			ss << SNMPpp::OID( vl->val.objid, vl->val_len/sizeof(unsigned long) );
-			break;
-		case ASN_TIMETICKS:
-			ss << vl->val.integer << " timeticks (1/100 seconds)";
-			break;
-		default:
-			// if you hit this exception, please go ahead and add whichever case you triggered
-			/// @throw std::invalid_argument if the requested OID is not one of the few simple types recognized by SNMPpp.
-			throw std::invalid_argument( "OID " + o.str() + " has no string representation." );
+		asn.erase( pos, std::string::npos );
+		txt.erase( 0, pos + 2 );
+
+		// strings start and end with double quotes -- get rid of those double quotes
+		const size_t len = txt.size();
+		if (		asn			== "STRING"	&&
+				len			>= 2			&&
+				txt[0]		== '\"'		&&
+				txt[len-1]	== '\"'		)
+		{
+			txt.erase( len - 1 );	// erase trailing double quote
+			txt.erase( 0, 1 );		// erase leading double quote
+		}
 	}
-	
-	return ss.str();
+
+	return txt;
 }
 
 
@@ -297,21 +303,7 @@ std::ostream &operator<<( std::ostream &os, const SNMPpp::Varlist &varlist )
 	// list all of the OIDs in the varlist
 	for ( size_t idx = 0; idx < v.size(); idx ++ )
 	{
-		os << "\t" << v[idx] << ": ";
-		const int type = varlist.asnType( v[idx] );
-		os << " asn type=" << type;
-		switch ( type )
-		{
-			case ASN_BOOLEAN:
-			case ASN_INTEGER:
-			case ASN_OCTET_STR:
-			case ASN_NULL:
-			case ASN_OBJECT_ID:
-			case ASN_TIMETICKS:
-				os << ", txt=" << varlist.asString( v[idx] );
-				break;
-		}
-		os << std::endl;
+		os	<< "\t" << v[idx] << ": ASN type=" << varlist.asnType( v[idx] ) << ", txt=" << varlist.asString( v[idx] ) << std::endl;
 	}
 
 	return os;

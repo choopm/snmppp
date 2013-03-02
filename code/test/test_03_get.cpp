@@ -24,13 +24,16 @@ void testGetNext( SNMPpp::SessionHandle &sessionHandle )
 		assert( pdu.varlist().firstOID() == oldOid );
 
 		pdu = SNMPpp::getNext( sessionHandle, pdu );
-		std::cout << pdu;
+
+		std::cout << pdu; // debug output
 
 		assert( pdu.empty() == false );
 		assert( pdu.size() == 1 );
 		newOid = pdu.varlist().firstOID();
 		assert( oldOid < newOid );
 		assert( newOid > oldOid );
+
+		std::cout << "Reading " << pdu.firstOID() << ": " << pdu.varlist().asString() << std::endl;
 
 		pdu.free();
 		assert( pdu.empty() == true );

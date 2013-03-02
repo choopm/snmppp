@@ -115,6 +115,10 @@ namespace SNMPpp
 			 */
 			virtual operator netsnmp_variable_list *( void );
 
+			/** Get access to a specific varlist for this PDU.
+			 */
+			virtual netsnmp_variable_list * operator[]( const size_t idx );
+
 			/** Free the existing variable list and use this one instead.
 			 */
 			virtual PDU &setVarlist( Varlist &vl );
@@ -127,27 +131,31 @@ namespace SNMPpp
 
 			/** Return the size of the variable list or zero if the PDU is empty.
 			 */
-			virtual size_t size		( void )					const;
+			virtual size_t size( void ) const;
 
 			/** Return `TRUE` if the variable list contains the given OID.
 			 */
-			virtual bool contains	( const SNMPpp::OID &o )	const;
+			virtual bool contains( const SNMPpp::OID &o ) const;
+
+			/** Return the first OID object in the variable list.
+			 */
+			virtual SNMPpp::OID firstOID( void ) const;
 
 			/** Add an OID as ASN_NULL to the variable list.
 			 */
-			virtual PDU &addNullVar	( const SNMPpp::OID &o );
+			virtual PDU &addNullVar( const SNMPpp::OID &o );
 
 			/** Add numerous OIDs to the variable list.
 			 * @see SNMPpp::PDU::addNullVar( const SNMPpp::OID &o )
 			 * @see SNMPpp::PDU::addNullVars( const SNMPpp::VecOID &v )
 			 */
-			virtual PDU &addNullVars	( const SNMPpp::SetOID &s );
+			virtual PDU &addNullVars( const SNMPpp::SetOID &s );
 
 			/** Add numerous OIDs to the variable list.
 			 * @see SNMPpp::PDU::addNullVar( const SNMPpp::OID &o )
 			 * @see SNMPpp::PDU::addNullVars( const SNMPpp::SetOID &s )
 			 */
-			virtual PDU &addNullVars	( const SNMPpp::VecOID &v );
+			virtual PDU &addNullVars( const SNMPpp::VecOID &v );
 
 		protected:
 

@@ -135,6 +135,24 @@ SNMPpp::PDU::operator netsnmp_variable_list *( void )
 }
 
 
+netsnmp_variable_list * SNMPpp::PDU::operator[]( const size_t idx )
+{
+	netsnmp_variable_list *p = NULL;
+
+	/**
+	 * @return Returns a NULL pointer if the index is larger than the number
+	 * of items in the variable list.
+	 */
+
+	if ( ! empty() )
+	{
+		p = varlist().operator[]( idx );
+	}
+
+	return p;
+}
+
+
 SNMPpp::PDU &SNMPpp::PDU::setVarlist( Varlist &vl )
 {
 	netsnmp_variable_list *p = vl;
@@ -180,6 +198,14 @@ bool SNMPpp::PDU::contains( const SNMPpp::OID &o )	const
 	}
 
 	return found;
+}
+
+
+SNMPpp::OID SNMPpp::PDU::firstOID( void ) const
+{
+	/// @see SNMPpp::PDU::varlist() const for the exceptions this may throw.
+
+	return varlist().firstOID();
 }
 
 

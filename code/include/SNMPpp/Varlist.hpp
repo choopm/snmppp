@@ -139,12 +139,15 @@ namespace SNMPpp
 
 			/** Return the [N]th netsnmp_variable_list pointer.
 			 */
-			virtual const netsnmp_variable_list *operator[]( const size_t idx ) const;
+			virtual netsnmp_variable_list *operator[]( const size_t idx );
 			
 			/** Return the first OID object in the varlist.  This will throw if
 			 * the varlist is empty.
 			 */
 			virtual SNMPpp::OID firstOID( void ) const;
+
+			// The next few methods help extract information from Varlists
+			// when there happens to be multiple objects in the linked list.
 
 			/** Return the ASN type for the given OID.  This will throw if the
 			 * varlist object does not contain the specified OID.  The ASN
@@ -164,44 +167,106 @@ namespace SNMPpp
 			 * ASN_COUNTER			|	65
 			 * ASN_GAUGE				|	66
 			 * ASN_TIMETICKS			|	67
+			 *
+			 * @see asnType( void ) const
 			 */
 			virtual int asnType( const SNMPpp::OID &o ) const { return at(o)->type; }
 
 			/** Retrieve the net-snmp value structure associated with an OID.
 			 * Also see at().val_len which may be required to properly
 			 * interpret some values, such as strings and OIDs.
+			 *
+			 * @see SNMPpp::Varlist::at() const
+			 * @see SNMPpp::Varlist::value( void ) const
 			 */
 			virtual const netsnmp_vardata &valueAt( const SNMPpp::OID &o ) const { return at(o)->val; }
 
 			/** Retrieve the value of the given boolean OID.
-			 * @see SNMPpp::Varlist::asString() which automatically converts and interprets
-			 * known types to a text string.
+			 * @see SNMPpp::Varlist::getBool( void ) const
+			 * @see SNMPpp::Varlist::asString()
 			 */
-			virtual bool			getBool		( const SNMPpp::OID &o ) const;
+			virtual bool getBool( const SNMPpp::OID &o ) const;
 
 			/** Retrieve the value of the given long OID.
-			 * @see SNMPpp::Varlist::asString() which automatically converts and interprets
-			 * known types to a text string.
+			 * @see SNMPpp::Varlist::getLong() const
+			 * @see SNMPpp::Varlist::asString()
 			 */
-			virtual long			getLong		( const SNMPpp::OID &o ) const;
+			virtual long getLong( const SNMPpp::OID &o ) const;
 
 			/** Retrieve the value of the given string OID.
-			 * @see SNMPpp::Varlist::asString() which automatically converts and interprets
-			 * known types to a text string.
+			 * @see SNMPpp::Varlist::getString( void ) const
 			 */
-			virtual std::string	getString	( const SNMPpp::OID &o ) const;
+			virtual std::string getString( const SNMPpp::OID &o ) const;
 
 			/** Retrieve the value of the given object OID.
-			 * @see SNMPpp::Varlist::asString() which automatically converts and interprets
-			 * known types to a text string.
+			 * @see SNMPpp::Varlist::getOid( void ) const
+			 * @see SNMPpp::Varlist::asString()
 			 */
-			virtual SNMPpp::OID	getOID		( const SNMPpp::OID &o ) const;
+			virtual SNMPpp::OID getOID( const SNMPpp::OID &o ) const;
 
 			/** Convert any of the known basic ASN types to a easy-to-use text
 			 * string.  E.g., booleans are converted to the text strings
 			 * "true" and "false", etc.
+			 * @see SNMPpp::Varlist::asString( void ) const
 			 */
-			virtual std::string	asString		( const SNMPpp::OID &o ) const;
+			virtual std::string asString( const SNMPpp::OID &o ) const;
+
+			// The next few methods help extract information from Varlists
+			// when there happens to be a single object in the linked list.
+
+			/** Similar to SNMPpp::Varlist::asnType( const SNMPpp::OID &o ) const
+			 * but if the varlist contains multiple objects, assumes only the
+			 * first one is of interest.
+			 * @see SNMPpp::Varlist::asnType( const SNMPpp::OID &o ) const
+			 * @see SNMPpp::Varlist::asString( void ) const
+			 */
+			virtual int asnType( void ) const { return asnType( firstOID() ); }
+
+			/** Similar to SNMPpp::Varlist::valueAt( const SNMPpp::OID &o ) const
+			 * but if the varlist contains multiple objects, assumes only the
+			 * first one is of interest.
+			 * @see SNMPpp::Varlist::valueAt( const SNMPpp::OID &o ) const
+			 * @see SNMPpp::Varlist::asString( void ) const
+			 */
+			virtual const netsnmp_vardata &value( void ) const { return valueAt( firstOID() ); }
+
+			/** Similar to SNMP::Varlist::getBool( const SNMPpp::OID &o ) const
+			 * but if the varlist contains multiple objects, assumes only the
+			 * first one is of interest.
+			 * @see SNMPpp::Varlist::getBool( const SNMPpp::OID &o ) const
+			 * @see SNMPpp::Varlist::asString( void ) const
+			 */
+			virtual bool	getBool( void ) const { return getBool( firstOID() ); }
+
+			/** Similar to SNMPpp::Varlist::getLong( const SNMPpp::OID &o ) const
+			 * but if the varlist contains multiple objects, assumes only the
+			 * first one is of interest.
+			 * @see SNMPpp::Varlist::getLong( const SNMPpp::OID &o ) const
+			 * @see SNMPpp::Varlist::asString( void ) const
+			 */
+			virtual long getLong( void ) const { return getLong( firstOID() ); }
+			
+			/** Similar to SNMPpp::Varlist::getString( const SNMPpp::OID &o ) const
+			 * but if the varlist contains multiple objects, assumes only the
+			 * first one is of interest.
+			 * @see SNMPpp::Varlist::getString( const SNMPpp::OID &o ) const
+			 */
+			virtual std::string getString( void ) const { return getString( firstOID() ); }
+			
+			/** Similar to SNMPpp::Varlist::getOID( const SNMPpp::OID &o ) const
+			 * but if the varlist contains multiple objects, assumes only the
+			 * first one is of interest.
+			 * @see SNMPpp::Varlist::getOID( const SNMPpp::OID &o ) const
+			 * @see SNMPpp::Varlist::asString( void ) const 
+			 */
+			virtual SNMPpp::OID getOID( void ) const { return getOID( firstOID() ); }
+			
+			/** Similar to SNMPpp::Varlist::asString( const SNMPpp::OID &o ) const
+			 * but if the varlist contains multiple objects, assumes only the
+			 * first one is of interest.
+			 * @see SNMPpp::Varlist::asString( const SNMPpp::OID &o ) const
+			 */
+			virtual std::string asString( void ) const { return asString( firstOID() ); }
 
 		protected:
 

@@ -43,7 +43,22 @@ void example1ManyOidsAtOnce( SNMPpp::SessionHandle &sessionHandle )
 
 	// for debugging, display the OID and the value we retrieved from the SNMP server
 	std::cout << pdu;
-	
+
+	// here is one of several possible ways to extract the replies from the PDU
+	for ( size_t idx = 0; idx < pdu.size(); idx ++ )
+	{
+		const SNMPpp::Varlist vl( pdu[idx] );
+		std::cout << "\tOID: " << vl.firstOID() << ", STR: " << vl.asString() << std::endl;
+	}
+
+	// a similar way to extract all of the values would be:
+	SNMPpp::Varlist vl = pdu.varlist();
+	for ( size_t idx = 0; idx < vl.size(); idx ++ )
+	{
+		SNMPpp::OID o( vl[idx] );
+		std::cout << "\tOID: " << o << ", STR: " << vl.asString(o) << std::endl;
+	}
+
 	// always remember to free the PDU once done with it
 	pdu.free();
 

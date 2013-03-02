@@ -25,9 +25,8 @@ int main( int argc, char *argv[] )
 {
 	std::cout << "Testing MIBs:" << std::endl;
 
-	snmp_set_save_descriptions(1);
+//	snmp_set_save_descriptions(1);
 	netsnmp_init_mib();
-//	SNMPpp::initializeNetSnmpAgent();
 
 	lookupOid( ""							);
 	lookupOid( ".1"							);
@@ -63,20 +62,16 @@ int main( int argc, char *argv[] )
 					<< "\tdefaultValue="	<< (tree->defaultValue	? tree->defaultValue	: "" ) << std::endl;
 	}
 
-	//	FILE *f = fopen( "output.txt", "w" );
+//	FILE *f = fopen( "output.txt", "w" );
 //	tree = read_all_mibs();
 //	print_ascii_dump_tree( f, tree, 0 );
 //	fclose( f );
-
-	//	while ( tree != NULL )
+//	while ( tree != NULL )
 //	{
 //		tree = tree->next;
 //	}
-
 //	print_description( o, o, 999 );
 
-//	get_module_node(const char *, const char *, oid *, size_t *);
-	
 	std::cout << "\t...done!" << std::endl;
 
 	return 0;

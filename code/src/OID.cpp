@@ -368,7 +368,7 @@ SNMPpp::OID SNMPpp::OID::parent( const size_t level ) const
 	return o;
 }
 
-#include <iostream>
+
 std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) const
 {
 	/** @note If net-snmp hasn't yet been initialized, you must call
