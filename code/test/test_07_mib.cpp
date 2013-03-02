@@ -25,7 +25,7 @@ int main( int argc, char *argv[] )
 {
 	std::cout << "Testing MIBs:" << std::endl;
 
-//	snmp_set_save_descriptions(1);
+	snmp_set_save_descriptions(1);
 	netsnmp_init_mib();
 
 	lookupOid( ""							);
@@ -45,32 +45,41 @@ int main( int argc, char *argv[] )
 	if ( o[2] != 7 ) std::cout << "\to[2]==4 is FALSE for " << o << std::endl;
 	std::cout << "\to[6]==" << o[6] << std::endl;
 
-	struct tree * tree = get_tree( o, o, get_tree_head() );
+	const struct tree * tree = o.getTree();
 
 	std::cout	<< std::endl
+				<< "Information extracted from the tree or MIB module:" << std::endl
 				<< "\tOID=" << o << std::endl
-				<< "\tp=" << (void*)tree << std::endl;
+				<< "\ttree pointer=" << (void*)tree << std::endl;
 	if ( tree )
 	{
-		std::cout	<< "\tlabel="		<< (tree->label			? tree->label		: "" ) << std::endl
-					<< "\tparent="		<< (tree->parent			? tree->parent		:NULL) << std::endl
-					<< "\taugments="		<< (tree->augments		? tree->augments		: "" ) << std::endl
-					<< "\thints="		<< (tree->hint			? tree->hint			: "" ) << std::endl
-					<< "\tunits="		<< (tree->units			? tree->units		: "" ) << std::endl
-					<< "\tdescription="	<< (tree->description	? tree->description	: "" ) << std::endl
-					<< "\treference="	<< (tree->reference		? tree->reference	: "" ) << std::endl
-					<< "\tdefaultValue="	<< (tree->defaultValue	? tree->defaultValue	: "" ) << std::endl;
+		std::cout	<< "\ttree->modid="			<< tree->modid										<< std::endl
+					<< "\ttree->label="			<< (tree->label			? tree->label		: "" )	<< std::endl
+					<< "\ttree->parent="			<< (tree->parent			? tree->parent		:NULL)	<< std::endl
+					<< "\ttree->augments="		<< (tree->augments		? tree->augments		: "" )	<< std::endl
+					<< "\ttree->hints="			<< (tree->hint			? tree->hint			: "" )	<< std::endl
+					<< "\ttree->units="			<< (tree->units			? tree->units		: "" )	<< std::endl
+					<< "\ttree->description="		<< (tree->description	? tree->description	: "" )	<< std::endl
+					<< "\ttree->reference="		<< (tree->reference		? tree->reference	: "" )	<< std::endl
+					<< "\ttree->defaultValue="	<< (tree->defaultValue	? tree->defaultValue	: "" )	<< std::endl;
 	}
 
-//	FILE *f = fopen( "output.txt", "w" );
-//	tree = read_all_mibs();
-//	print_ascii_dump_tree( f, tree, 0 );
-//	fclose( f );
-//	while ( tree != NULL )
-//	{
-//		tree = tree->next;
-//	}
-//	print_description( o, o, 999 );
+	const struct module *module = o.getModule();
+	if ( module )
+	{
+		std::cout	<< "\tmodule->name="			<< module->name			<< std::endl
+					<< "\tmodule->file="			<< module->file			<< std::endl
+					<< "\tmodule->no_imports="	<< module->no_imports	<< std::endl;
+		for ( int idx = 0; idx < module->no_imports; idx ++ )
+		{
+			std::cout << "\t\t#" << idx << ": module->imports[" << idx << "].label=" << module->imports[idx].label << std::endl;
+		}
+	}
+
+	std::cout	<< "\to.mibModuleName(false)=" << o.mibModuleName(false)	<< std::endl
+				<< "\to.mibModuleFile(false)=" << o.mibModuleFile(false)	<< std::endl
+				<< "\to.mibModuleName(true) =" << o.mibModuleName(true)	<< std::endl
+				<< "\to.mibModuleFile(true) =" << o.mibModuleFile(true)	<< std::endl;
 
 	std::cout << "\t...done!" << std::endl;
 

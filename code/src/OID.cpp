@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <sstream>
 #include <stdexcept>
+#include <algorithm>
 #include <SNMPpp/OID.hpp>
 
 
@@ -433,11 +434,11 @@ std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) co
 
 	if ( ! o.empty() )
 	{
-		// BEWARE:  get_tree() will return the closest match, not an exact
-		// match!  Meaning that if the mibs describe .1.2.3.4 and you ask for
-		// .1.2.3.4.5.6 you'll still get a valid "t" pointer back.  It is up
-		// to us afterwards to determine just how close of a match we've been
-		// given.
+		// BEWARE:  get_tree() will return the closest match when it cannot find
+		// an exact match!  Meaning that if the mibs describe .1.2.3.4 and you
+		// ask for .1.2.3.4.5.6 you'll still get a valid "t" pointer back.  It
+		// is up to us afterwards to determine just how close of a match we've
+		// been given.
 		struct tree * t = get_tree( o, o, get_tree_head() );
 
 		while ( t != NULL && t->label != NULL )
@@ -470,12 +471,14 @@ std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) co
 	size_t idx = 0;
 	if ( lookup == kLeafOnly )
 	{
+		// skip to the end of the vector
 		idx = v.size() - 1;
 	}
 	else
 	{
 		name = ".";
 	}
+
 	while( true )
 	{
 		name += vstr[ idx ];
@@ -490,6 +493,95 @@ std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) co
 	}
 
 	return name;
+}
+
+
+std::string SNMPpp::OID::mibModuleName( const bool exact ) const
+{
+	/// @param [in] exact see SNMPpp::OID::getTree() for details.
+
+	std::string s;
+	const struct module *m = getModule( exact );
+	if ( m )
+	{
+		s = m->name;
+	}
+
+	return s;
+}
+
+
+std::string SNMPpp::OID::mibModuleFile( const bool exact ) const
+{
+	/// @param [in] exact see SNMPpp::OID::getTree() for details.
+
+	std::string s;
+	const struct module *m = getModule( exact );
+	if ( m )
+	{
+		s = m->file;
+	}
+
+	return s;
+}
+
+
+#include <iostream>
+const struct tree *SNMPpp::OID::getTree( const bool exact ) const
+{
+	struct tree *t = NULL;
+
+	if ( ! empty() )
+	{
+		t = get_tree( *this, *this, get_tree_head() );
+
+		if ( exact )
+		{
+			/** @param [in] exact When set to TRUE the tree returned must exactly
+			 * match the OID.  By default when called with FALSE, if an exact
+			 * match cannot be made, then a parent or grandparent of the OID
+			 * may be returned instead.  Usually, this means the required MIB
+			 * is not installed or hasn't been loaded.
+			 */
+
+			// make sure the tree returned is an exact match
+			std::vector<oid> tmpOid;
+			struct tree *p = t;
+			while ( p != NULL )
+			{
+				// note how we're starting with the last value and working
+				// backwards towards the root, so this OID will be reversed
+				tmpOid.push_back( p->subid );
+				p = p->parent;
+			}
+
+			// put the OID back into the order we need
+			std::reverse( tmpOid.begin(), tmpOid.end() );
+
+			if ( v != tmpOid )
+			{
+				// this isn't an exact match, so return nothing
+				t = NULL;
+			}
+		}
+	}
+
+	return t;
+}
+
+
+const struct module *SNMPpp::OID::getModule( const bool exact ) const
+{
+	/// @param [in] exact see SNMPpp::OID::getTree() for details.
+
+	const struct module	*m = NULL;
+	const struct tree	*t = getTree( exact );
+	if ( t )
+	{
+		m = find_module( t->modid );
+	}
+
+	return m;
 }
 
 

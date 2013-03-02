@@ -320,7 +320,37 @@ namespace SNMPpp
 			 */
 			virtual std::string nameFromMib( const SNMPpp::OID::ENameLookup lookup=SNMPpp::OID::kFull ) const;
 
-	protected:
+			/** Get information on the MIB file which describes this OID.
+			 * For example:
+			 *
+			 *		SNMPpp::OID o( ".1.3.6.1" );
+			 *		std::cout << o.mibModuleName() << std::endl;
+			 *
+			 * ...would display the name "SNMPv2-SMI" if the MIBs are
+			 * installed on the system.
+			 */
+			virtual std::string mibModuleName( const bool exact=false ) const;
+
+			/** Get information on the MIB filename.
+			 * For example:
+			 *
+			 *		SNMPpp::OID o( ".1.3.6.1" );
+			 *		std::cout << o.mibModuleFile() << std::endl;
+			 *
+			 * ...would display "/usr/share/mibs/ietf/SNMPv2-SMI" on a linux
+			 * system if the MIBs have been installed.
+			 */
+			virtual std::string mibModuleFile( const bool exact=false ) const;
+
+			/** Get the net-snmp tree pointer for this OID.
+			 */
+			virtual const struct tree *getTree( const bool exact=false ) const;
+
+			/** Get the net-snmp module pointer for this OID.
+			 */
+			virtual const struct module *getModule( const bool exact=false ) const;
+
+		protected:
 
 			std::vector < oid > v;
 	};
