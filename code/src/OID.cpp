@@ -537,11 +537,17 @@ const struct tree *SNMPpp::OID::getTree( const bool exact ) const
 
 		if ( exact )
 		{
-			/** @param [in] exact When set to TRUE the tree returned must exactly
-			 * match the OID.  By default when called with FALSE, if an exact
-			 * match cannot be made, then a parent or grandparent of the OID
-			 * may be returned instead.  Usually, this means the required MIB
-			 * is not installed or hasn't been loaded.
+			/** @param [in] exact When set to `true` the tree returned must
+			 * exactly match the OID.  By default when called with `false`, if
+			 * an exact match cannot be made, then a parent or grandparent of
+			 * the OID may be returned instead.  Usually, this means the
+			 * required MIB is not installed or hasn't been loaded.
+			 * For example, if the OID is .1.3.6.1.4.1.38322.1.1.1.3.0 but that
+			 * specific device's custom MIB isn't available, then the closest
+			 * grandparent likely to be returned is .1.3.6.1.4.1.  If `exact`
+			 * is set to `true` then in this scenario getTree() will return
+			 * a `NULL` pointer rather than the pointer representing
+			 * .1.3.6.1.4.1.
 			 */
 
 			// make sure the tree returned is an exact match

@@ -326,7 +326,7 @@ namespace SNMPpp
 			 *		SNMPpp::OID o( ".1.3.6.1" );
 			 *		std::cout << o.mibModuleName() << std::endl;
 			 *
-			 * ...would display the name "SNMPv2-SMI" if the MIBs are
+			 * ...might display the name `SNMPv2-SMI` if the MIBs are
 			 * installed on the system.
 			 */
 			virtual std::string mibModuleName( const bool exact=false ) const;
@@ -337,7 +337,7 @@ namespace SNMPpp
 			 *		SNMPpp::OID o( ".1.3.6.1" );
 			 *		std::cout << o.mibModuleFile() << std::endl;
 			 *
-			 * ...would display "/usr/share/mibs/ietf/SNMPv2-SMI" on a linux
+			 * ...might display `/usr/share/mibs/ietf/SNMPv2-SMI` on a linux
 			 * system if the MIBs have been installed.
 			 */
 			virtual std::string mibModuleFile( const bool exact=false ) const;
