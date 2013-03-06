@@ -270,12 +270,12 @@ SNMPpp::OID &SNMPpp::OID::set( const SNMPpp::OID::ECommon &location )
 {
 	switch ( location )
 	{
-		case kInvalid:			set( ""						); break;
-		case kEmpty:				set( ""						); break;
-		case kInternet:			set( "1.3.6.1"				); break;
+		case kInvalid:				set( ""							); break;
+		case kEmpty:				set( ""							); break;
+		case kInternet:				set( "1.3.6.1"					); break;
 		case kPrivateEnterprise:	set( "1.3.6.1.4"				); break;
 		case kSysUpTime:			set( "1.3.6.1.2.1.1.3.0"		); break;
-		case kTrap:				set( "1.3.6.1.6.3.1.1.4.1.0"	); break;
+		case kTrap:					set( "1.3.6.1.6.3.1.1.4.1.0"	); break;
 	}
 
 	return *this;
@@ -378,22 +378,22 @@ std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) co
 	 *
 	 * The different lookup types determine how the name is shown:
 	 *
-	 * Value			| Meaning									| Example
-	 * -----			| -------									| -------
+	 * Value			| Meaning										| Example
+	 * -----			| -------										| -------
 	 * kLeafOnly		| Only the very last name is returned.		| .1.3.6.1 -> "internet"
-	 * kPartial		| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.internet"
+	 * kPartial			| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.internet"
 	 * kInverted		| The opposite of kPartial.					| .1.3.6.1 -> ".iso.org.dod.1"
-	 * kFull         | All names are looked up.					| .1.3.6.1 -> ".iso.org.dod.internet"
+	 * kFull			| All names are looked up.						| .1.3.6.1 -> ".iso.org.dod.internet"
 	 *
 	 * If the MIB files haven't been installed or initialized, the same
 	 * example would look like this:
 	 *
-	 * Value			| Meaning									| Example
-	 * -----			| -------									| -------
+	 * Value			| Meaning										| Example
+	 * -----			| -------										| -------
 	 * kLeafOnly		| Only the very last name is returned.		| .1.3.6.1 -> "1"
-	 * kPartial		| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.1"
+	 * kPartial			| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.1"
 	 * kInverted		| The opposite of kPartial.					| .1.3.6.1 -> ".1.3.6.1"
-	 * kFull         | All names are looked up.					| .1.3.6.1 -> ".1.3.6.1"
+	 * kFull			| All names are looked up.						| .1.3.6.1 -> ".1.3.6.1"
 	 */
 
 	if ( empty() )
@@ -456,7 +456,7 @@ std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) co
 		// OID (meaning the first name in "tmp") so exit out of this loop if
 		// we're about to copy something other than the last name
 		if (		lookup == SNMPpp::OID::kLeafOnly	||
-				lookup == SNMPpp::OID::kPartial	)
+					lookup == SNMPpp::OID::kPartial	)
 		{
 			if ( tmp.size() != vstr.size() || idx > 0 )
 			{

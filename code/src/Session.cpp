@@ -19,7 +19,7 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::strin
 
 	session.version			= version;
 	session.retries			= retryAttempts;
-	session.peername			= (char*)server.c_str();
+	session.peername		= (char*)server.c_str();
 	session.community		= (unsigned char*)community.c_str();
 	session.community_len	= community.size();
 

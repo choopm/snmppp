@@ -279,8 +279,8 @@ std::string SNMPpp::Varlist::asString( const SNMPpp::OID &o ) const
 
 		// strings start and end with double quotes -- get rid of those double quotes
 		const size_t len = txt.size();
-		if (		asn			== "STRING"	&&
-				len			>= 2			&&
+		if (	asn			== "STRING"	&&
+				len			>= 2		&&
 				txt[0]		== '\"'		&&
 				txt[len-1]	== '\"'		)
 		{

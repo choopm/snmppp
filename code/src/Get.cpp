@@ -30,9 +30,9 @@ SNMPpp::PDU SNMPpp::sync( SNMPpp::SessionHandle &session, SNMPpp::PDU &request )
 	// the request PDU has been freed by net-snmp and no longer exists
 	request.clear();
 
-	if (		response				== NULL				||
+	if (	response			== NULL					||
 			response->errstat	!= SNMP_ERR_NOERROR	||
-			status				!= STAT_SUCCESS		)
+			status				!= STAT_SUCCESS			)
 	{
 		int error1 = 0;
 		int error2 = 0;

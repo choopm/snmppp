@@ -236,7 +236,7 @@ SNMPpp::Varlist SNMPpp::createV2TrapVarlist( const SNMPpp::OID &o, const long up
 	}
 
 	const SNMPpp::OID sysUpTime	( OID::kSysUpTime	); // set this to centiseconds
-	const SNMPpp::OID trap		( OID::kTrap			); // set this to the OID you want to send out
+	const SNMPpp::OID trap			( OID::kTrap		); // set this to the OID you want to send out
 
 	SNMPpp::Varlist varlist;
 	snmp_varlist_add_variable( varlist, sysUpTime, sysUpTime, ASN_TIMETICKS, (unsigned char*)&uptime, sizeof(uptime)	);

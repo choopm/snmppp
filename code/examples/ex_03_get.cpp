@@ -168,7 +168,7 @@ int main( int argc, char *argv[] )
 	exampleGetNext			( sessionHandle );
 	example1ManyOidsAtOnce	( sessionHandle );
 	example2ManyOidsAtOnce	( sessionHandle );
-	exampleGetSingleOid		( sessionHandle );
+	exampleGetSingleOid	( sessionHandle );
 	example1GetBulk			( sessionHandle );
 	example2GetBulk			( sessionHandle );
 
