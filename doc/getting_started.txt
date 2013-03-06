@@ -18,7 +18,7 @@ Quick guide on getting started with SNMPpp:
 	- cmake ..
 	- make
 
-Other possible targets include:  "make test",  "sudo make install" or "make package".
+Other possible targets include:  "make test", "sudo make install", "make package" or "make package_source".
 
 ==DIRECTORIES==
 
@@ -51,4 +51,4 @@ The "Single API" typically has functions that start with "snmp_sess_".  For exam
 
 
 Stéphane Charette <stephanecharette@gmail.com>
-2013-Feb-26.
+2013-Mar-06.

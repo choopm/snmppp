@@ -49,7 +49,7 @@ SET ( CPACK_PACKAGE_VERSION_PATCH			"${SNMPPP_VER_PATCH}-${SNMPPP_VER_COMMIT}-${
 SET ( CPACK_RESOURCE_FILE_LICENSE			${CMAKE_CURRENT_SOURCE_DIR}/LICENSE )
 SET ( CPACK_GENERATOR						"DEB;RPM" )
 
-SET ( CPACK_SOURCE_IGNORE_FILES			".git" ".kdev4" "SNMPpp.kdev4" "build" "Testing" "snmppp.xcf" "snmppp.png" )
+SET ( CPACK_SOURCE_IGNORE_FILES			".git" ".kdev4" "SNMPpp.kdev4" "build" "snmppp.xcf" "snmppp.png" )
 SET ( CPACK_SOURCE_GENERATOR				"TGZ" )
 
 INCLUDE( CPack )
