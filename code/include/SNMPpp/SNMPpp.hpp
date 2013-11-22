@@ -4,7 +4,7 @@
 
 #pragma once
 
-/** @file SNMPpp.hpp
+/** @file
  * Including SNMPpp.hpp will then include all of the other SNMPpp files in
  * the correct order so cyclic dependencies are avoided.  If you want to keep
  * things simple, you can include just this one header file, and you'll have

@@ -17,7 +17,7 @@ int main( int argc, char *argv[] )
 	std::cout	<< "OID1 == " << oid1 << std::endl
 				<< "OID2 == " << oid2 << std::endl
 				<< "OID2 is " << ( oid2.isChildOf(oid1) ? "": "not " ) << "a child of OID1." << std::endl
-				<< "OID1 is " << ( oid1.isImmediateParentOf(oid2) ? "" : "not " ) << "the immediate parent of OID1." << std::endl
+				<< "OID1 is " << ( oid1.isImmediateParentOf(oid2) ? "" : "not " ) << "the immediate parent of OID2." << std::endl
 				<< "The length of OID1 is " << oid1.size() << "." << std::endl
 				<< "The length of OID2 is " << oid2.size() << "." << std::endl;
 

@@ -15,7 +15,7 @@
 
 namespace SNMPpp
 {
-	/** @file Trap.hpp
+	/** @file
 	 * The only way to send traps to all configured trap sinks is to first
 	 * initialize as a net-snmp agent.  If the process you are writing is
 	 * already an net-snmp agent, then all is fine.  But if the process is

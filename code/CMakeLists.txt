@@ -2,28 +2,38 @@
 # SNMPpp project uses the MIT license. See LICENSE for details.
 # Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-PROJECT ( SNMPpp CXX )
-
 # SNMPpp requires net-snmp (e.g., "libsnmp-dev.deb")
-FIND_LIBRARY ( NETSNMP_LIBRARY			NAMES netsnmp			)
-FIND_LIBRARY ( NETSNMPAGENT_LIBRARY	NAMES netsnmpagent		)
-FIND_LIBRARY ( NETSNMPHELPERS_LIBRARY	NAMES netsnmphelpers	)
-FIND_LIBRARY ( NETSNMPMIBS_LIBRARY		NAMES netsnmpmibs		)
-FIND_LIBRARY ( NETSNMPTRAPD_LIBRARY	NAMES netsnmptrapd		)
-FIND_LIBRARY ( SNMP_LIBRARY			NAMES snmp				)
+FIND_LIBRARY ( NETSNMP_LIBRARY          NAMES netsnmp           )
+FIND_LIBRARY ( NETSNMPAGENT_LIBRARY     NAMES netsnmpagent      )
+FIND_LIBRARY ( NETSNMPHELPERS_LIBRARY   NAMES netsnmphelpers    )
+FIND_LIBRARY ( NETSNMPMIBS_LIBRARY      NAMES netsnmpmibs       )
+FIND_LIBRARY ( NETSNMPTRAPD_LIBRARY     NAMES netsnmptrapd      )
+FIND_LIBRARY ( SNMP_LIBRARY             NAMES snmp              )
 
 SET ( SNMP_LIBRARIES ${NETSNMP_LIBRARY} ${NETSNMPAGENT_LIBRARY} ${NETSNMPHELPERS_LIBRARY} ${NETSNMPMIBS_LIBRARY} ${NETSNMPTRAPD_LIBRARY} ${SNMP_LIBRARY} )
 
 # DEBUG
-ADD_DEFINITIONS( -DDEBUG )
-SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_CFLAGS} -O0 -ggdb" )
+#ADD_DEFINITIONS( -DDEBUG )
+#SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_CFLAGS} -O0 -ggdb" )
+# END DEBUG
+
 # NON-DEBUG
-#add_definitions( -DNDEBUG )
-#set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_CFLAGS} -O3" )
+ADD_DEFINITIONS( -DNDEBUG )
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3" )
+# END NON-DEBUG
+
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-show-option"        ) # show command-line option to control errors
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra"                    ) # enable many warnings that gcc can auto-detect
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror"                          ) # all warnings will be considered as errors
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wshadow"                         ) # warn when a local variable hides another at a higher scope
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wformat=2"                       ) # check calls such as printf and scanf for parm format
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-field-initializers"  ) # allow the perfectly valid foo = {0} initializers
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable"             ) # some asserts aren't used in non-debug mode, so don't complain about unused vars
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter"            ) # especially in C++, sometimes parms aren't used in derived classes
+SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic"                            ) # position-independent code is necessary for a library
+#SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11"                     ) # C++11 not required to compile SNMPpp
 
 INCLUDE_DIRECTORIES ( BEFORE include )
-SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-show-option -Wall -Werror -Wshadow -Wformat=2 -Winit-self -Wwrite-strings -fpic" )
-
 ADD_SUBDIRECTORY ( include/SNMPpp )
 ADD_SUBDIRECTORY ( src )
 ADD_SUBDIRECTORY ( examples )

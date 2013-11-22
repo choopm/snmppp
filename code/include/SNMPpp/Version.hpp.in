@@ -22,4 +22,3 @@
  */
 #define LIBSNMPPPVER "@SNMPPP_VERSION@"
 #endif
-

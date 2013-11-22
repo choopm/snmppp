@@ -4,7 +4,7 @@
 
 #pragma once
 
-/** @file net-snmppp.hpp
+/** @file
  * All net-snmp includes needed by SNMPpp can be easily included by using
  * net-snmppp.hpp.  No other SNMPpp source files should have to include
  * additional net-snmp headers to compile SNMPpp.

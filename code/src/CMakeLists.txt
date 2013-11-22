@@ -2,9 +2,8 @@
 # SNMPpp project uses the MIT license. See LICENSE for details.
 # Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-PROJECT ( SNMPpp CXX )
-
 FILE ( GLOB SNMPPP_SOURCE *.cpp )
+LIST ( SORT SNMPPP_SOURCE )
 
 ADD_LIBRARY ( snmppps STATIC ${SNMPPP_SOURCE} )
 ADD_LIBRARY ( snmppp  SHARED ${SNMPPP_SOURCE} )

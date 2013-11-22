@@ -153,20 +153,20 @@ namespace SNMPpp
 			 * varlist object does not contain the specified OID.  The ASN
 			 * types are defined in net-snmp.  For example, see net-snmp/library/asn1.h:
 			 *
-			 * NET-SNMP TYPE NAME	|	NET-SNMP TYPE VALUE
-			 * :-----------------	|	------------------:
-			 * ASN_BOOLEAN			|	1
-			 * ASN_INTEGER			|	2
-			 * ASN_BIT_STR			|	3
-			 * ASN_OCTET_STR			|	4
-			 * ASN_NULL				|	5
-			 * ASN_OBJECT_ID			|	6
-			 * ASN_SEQUENCE			|	16
-			 * ASN_SET				|	17
-			 * ASN_IPADDRESS			|	64
-			 * ASN_COUNTER			|	65
-			 * ASN_GAUGE				|	66
-			 * ASN_TIMETICKS			|	67
+			 * NET-SNMP TYPE NAME   |   NET-SNMP TYPE VALUE
+			 * :-----------------   |   ------------------:
+			 * ASN_BOOLEAN          |   1
+			 * ASN_INTEGER          |   2
+			 * ASN_BIT_STR          |   3
+			 * ASN_OCTET_STR        |   4
+			 * ASN_NULL             |   5
+			 * ASN_OBJECT_ID        |   6
+			 * ASN_SEQUENCE         |   16
+			 * ASN_SET              |   17
+			 * ASN_IPADDRESS        |   64
+			 * ASN_COUNTER          |   65
+			 * ASN_GAUGE            |   66
+			 * ASN_TIMETICKS        |   67
 			 *
 			 * @see asnType( void ) const
 			 */

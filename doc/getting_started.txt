@@ -4,33 +4,60 @@
 
 ==SUMMARY==
 
-This project contains some C++ helper classes for SNMP.  A Large parts of these classes and helper functions have also been written specifically to help interface to the open source project net-snmp (https://sourceforge.net/projects/net-snmp/).
+This project contains some C++ helper classes for SNMP.  These classes and helper functions were written specifically to help interface to the open source project net-snmp (https://sourceforge.net/projects/net-snmp/).
 
-==GETTING STARTED==
+==GETTING STARTED (BINARIES) ==
+
+If all you need to do is link against SNMPpp, download and install the SNMPpp dev .deb package.
+
+For example, you can find the latest version at http://sourceforge.net/projects/snmppp/files/
+
+Then to install the .deb from the command-line, you'd use a command such as this one:
+
+    sudo dpkg -i snmppp-dev-0.0.3-14-Linux.deb
+
+If some dependencies are missing, running this might resolve the problem:
+
+    sudo apt-get install -f
+
+Once the package is correctly installed, the relevant files are:
+
+    /usr/include/SNMPpp/*
+    /usr/lib/libsnmppp.*
+
+At a minimum, your .cpp source files need to have this:
+
+    #include <SNMPpp/SNMPpp.hpp>
+
+And at link time, you need to use either libsnmppp.a (static) or libsnmppp.so (dynamic).
+
+You're done.  You can skip the rest of this file.
+
+==GETTING STARTED (FROM SOURCE) ==
 
 Quick guide on getting started with SNMPpp:
 
-	- download dependencies (e.g., "sudo apt-get install cmake libsnmp-dev ..."; see "installing_snmp_ubuntu.txt")
-	- download SNMPpp (e.g., "git clone git://git.code.sf.net/p/snmppp snmppp")
-	- cd snmppp/
-	- mkdir build
-	- cd build
-	- cmake ..
-	- make
+    - download dependencies (e.g., "sudo apt-get install cmake libsnmp-dev ..."; see "installing_snmp_ubuntu.txt")
+    - download SNMPpp (e.g., "git clone git://git.code.sf.net/p/snmppp snmppp")
+    - cd snmppp/
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
 
 Other possible targets include:  "make test", "sudo make install", "make package" or "make package_source".
 
 ==DIRECTORIES==
 
-The code you likely want to build and/or link against is in the following two directories:
+The code you'll want to build and/or link against is in the following two directories:
 
-	- code/src/*.cpp
-	- code/include/SNMPpp/*.hpp
+    - code/src/*.cpp
+    - code/include/SNMPpp/*.hpp
 
-Other directories to point out is a series of examles and test cases which can be easily referenced to get started:
+Other directories to point out is a series of examples and test cases which can be easily referenced to get started:
 
-	- code/examples/*.cpp
-	- code/test/*.cpp
+    - code/examples/*.cpp
+    - code/test/*.cpp
 
 ==NET-SNMP==
 
@@ -42,13 +69,15 @@ The "Traditional API" is not thread-friendly, while the newer "Single API" can b
 
 The "Single API" typically has functions that start with "snmp_sess_".  For example:
 
-	TRADITIONAL					SINGLE API
-	snmp_sess_init()			snmp_sess_init()
-	snmp_open()					snmp_sess_open()
-	snmp_send()					snmp_sess_send()
-	snmp_read()					snmp_sess_read()
-	snmp_error()				snmp_sess_error()
+    TRADITIONAL         SINGLE API
+    -----------         ----------
+    snmp_sess_init()    snmp_sess_init()
+    snmp_open()         snmp_sess_open()
+    snmp_send()         snmp_sess_send()
+    snmp_read()         snmp_sess_read()
+    snmp_error()        snmp_sess_error()
 
 
 Stéphane Charette <stephanecharette@gmail.com>
-2013-Mar-06.
+2013-Nov-22.
+

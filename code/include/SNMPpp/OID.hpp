@@ -29,42 +29,42 @@ namespace SNMPpp
 
 			/** An enum to represent some of the common OIDs applications may need.
 			 *
-			 * Value					| Oid
-			 * -----					| ---
-			 * kEmpty				| n/a
-			 * kInternet				| .1.3.6.1
-			 * kPrivateEnterprise	| .1.3.6.1.4
-			 * kSysUpTime			| .1.3.6.1.2.1.1.3.0
-			 * kTrap					| .1.3.6.1.6.3.1.1.4.1.0
+			 * Value                | Oid
+			 * -----                | ---
+			 * kEmpty               | n/a
+			 * kInternet            | .1.3.6.1
+			 * kPrivateEnterprise   | .1.3.6.1.4
+			 * kSysUpTime           | .1.3.6.1.2.1.1.3.0
+			 * kTrap                | .1.3.6.1.6.3.1.1.4.1.0
 			 */
 			enum ECommon
 			{
 				// several common locations useful as a starting point
-				kInvalid				= 0,
-				kEmpty				= 1,
-				kInternet			= 2,
-				kPrivateEnterprise	= 3,
-				kSysUpTime			= 4,
-				kTrap				= 5
+				kInvalid            = 0,
+				kEmpty              = 1,
+				kInternet           = 2,
+				kPrivateEnterprise  = 3,
+				kSysUpTime          = 4,
+				kTrap               = 5
 			};
 
 			/** An enum to indicate what kind of name lookup is required when
 			 * calling SNMPpp::OID::nameFromMib().
 			 *
-			 * Value			| Meaning									| Example
-			 * -----			| -------									| -------
-			 * kLeafOnly		| Only the very last name is returned.		| .1.3.6.1 -> "internet"
-			 * kPartial		| Start of OID combined with the last name.	| .1.3.6.1 -> ".1.3.6.internet"
-			 * kInverted		| The opposite of kPartial.					| .1.3.6.1 -> ".iso.org.dod.1"
-			 * kFull         | All names are looked up.					| .1.3.6.1 -> ".iso.org.dod.internet"
+			 * Value            | Meaning                                   | Example
+			 * -----            | -------                                   | -------
+			 * kLeafOnly        | Only the very last name is returned.      | .1.3.6.1 -> "internet"
+			 * kPartial         | Start of OID combined with the last name. | .1.3.6.1 -> ".1.3.6.internet"
+			 * kInverted        | The opposite of kPartial.                 | .1.3.6.1 -> ".iso.org.dod.1"
+			 * kFull            | All names are looked up.                  | .1.3.6.1 -> ".iso.org.dod.internet"
 			 */
 			enum ENameLookup
 			{
-				kUnknown				= 0,
-				kLeafOnly			= 1,
-				kPartial				= 2,
-				kInverted			= 3,
-				kFull				= 4
+				kUnknown    = 0,
+				kLeafOnly   = 1,
+				kPartial    = 2,
+				kInverted   = 3,
+				kFull       = 4
 			};
 
 			/** Destructor.

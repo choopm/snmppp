@@ -40,18 +40,18 @@ namespace SNMPpp
 			 */
 			enum EType
 			{
-				kInvalid		= 0					,
-				kUnknown		= 0					,	// alias
+				kInvalid        = 0                 ,
+				kUnknown        = 0                 ,   // alias
 				// SNMPv1 and higher:
-				kGet			= SNMP_MSG_GET		,	// get the specified OIDs
-				kGetNext		= SNMP_MSG_GETNEXT	,	// get the OID that comes after the one specified
-				kResponse	= SNMP_MSG_RESPONSE	,	// ???
-				kSet			= SNMP_MSG_SET		,	// set the specified OID
+				kGet            = SNMP_MSG_GET      ,   // get the specified OIDs
+				kGetNext        = SNMP_MSG_GETNEXT  ,   // get the OID that comes after the one specified
+				kResponse       = SNMP_MSG_RESPONSE ,   // ???
+				kSet            = SNMP_MSG_SET      ,   // set the specified OID
 				// SNMPv2 and higher:
-				kGetBulk		= SNMP_MSG_GETBULK	,	// get many OIDs at once
-				kInform		= SNMP_MSG_INFORM	,	// traps with replies
-				kTrap2		= SNMP_MSG_TRAP2		,	// traps
-				kReport		= SNMP_MSG_REPORT		// ???
+				kGetBulk        = SNMP_MSG_GETBULK  ,   // get many OIDs at once
+				kInform         = SNMP_MSG_INFORM   ,   // traps with replies
+				kTrap2          = SNMP_MSG_TRAP2    ,   // traps
+				kReport         = SNMP_MSG_REPORT       // ???
 			};
 
 			/** Destructor.
