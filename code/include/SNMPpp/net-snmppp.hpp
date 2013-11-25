@@ -28,20 +28,15 @@
 
 namespace SNMPpp
 {
-	/** Disable net-snmp logging.
-	 * See net-snmp/library/snmp_logging.h for several more options.
-	 */
-	void netsnmpDisableLogging( void );
+    /// Disable net-snmp logging.  @see net-snmp/library/snmp_logging.h for several more options.
+    void netsnmpDisableLogging( void );
 
-	/** Toggle net-snmp logging to STDERR.
-	 */
-	void netsnmpLogStdErr( const bool enabled = true );
+    /// Toggle net-snmp logging to STDERR.
+    void netsnmpLogStdErr( const bool enabled = true );
 
-	/** Toggle net-snmp logging to syslog.
-	 */
-	void netsnmpLogSyslog( const bool enabled = true );
+    /// Toggle net-snmp logging to syslog.
+    void netsnmpLogSyslog( const bool enabled = true );
 
-	/** Toggle net-snmp logging to an external file.
-	 */
-	void netsnmpLogToFile( const bool enabled = true, const std::string &filename = "/var/log/netsnmp.log" );
+    /// Toggle net-snmp logging to an external file.
+    void netsnmpLogToFile( const bool enabled = true, const std::string &filename = "/var/log/netsnmp.log" );
 };

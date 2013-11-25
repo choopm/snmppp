@@ -8,8 +8,8 @@
 
 std::string SNMPpp::version( void )
 {
-	/// @see LIBSNMPPPVER.
-	return std::string( LIBSNMPPPVER );
+    /// @see LIBSNMPPPVER.
+    return std::string( LIBSNMPPPVER );
 }
 
 
@@ -32,7 +32,8 @@ std::string SNMPpp::version( void )
  *
  * @section license License
  * The SNMPpp project uses the MIT license.  A copy of the license is included
- * in the project root directory when you clone the git repository.
+ * in the project root directory when you clone the git repository, or from
+ * this location: https://sourceforge.net/p/snmppp/code/ci/master/tree/LICENSE
  *
  * @author St&eacute;phane Charette <stephanecharette@gmail.com>
  */

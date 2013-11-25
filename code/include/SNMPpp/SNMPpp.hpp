@@ -22,7 +22,6 @@
 
 namespace SNMPpp
 {
-	/** Return the SNMPpp version number.
-	 */
-	std::string version( void );
+    /// Return the SNMPpp version number.
+    std::string version( void );
 };
