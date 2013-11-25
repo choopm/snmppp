@@ -226,7 +226,7 @@ oid SNMPpp::OID::operator[]( const size_t idx ) const
 	if ( idx >= v.size() )
 	{
 		/// @throw std::invalid_argument if the index is larger than the OID.
-		throw std::invalid_argument( "The index is beyond the end of OID \"" + str() + "\"." );
+		throw std::invalid_argument( "The index " + std::to_string(idx) + " is beyond the end of OID \"" + to_str() + "\"." );
 	}
 
 	return v[idx];
@@ -411,7 +411,7 @@ std::string SNMPpp::OID::nameFromMib( const SNMPpp::OID::ENameLookup lookup ) co
 			break;
 		default:
 			/// @throw std::invalid_argument if the lookup type is not one of the 4 values described above.
-			throw std::invalid_argument( "Invalid lookup type for OID " + str() + "." );
+			throw std::invalid_argument( "Invalid lookup type " + std::to_string(lookup) + " for OID " + to_str() + "." );
 	}
 
 	std::vector<std::string> vstr, tmp;
@@ -593,7 +593,7 @@ const struct module *SNMPpp::OID::getModule( const bool exact ) const
 
 std::ostream &operator<<( std::ostream &os, const SNMPpp::OID &o )
 {
-	os << o.str();
+	os << o.to_str();
 
 	return os;
 }

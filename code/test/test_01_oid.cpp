@@ -114,7 +114,7 @@ void checkConstness( void )
 				<< "\tsize_t:                " << o.operator size_t()							<< std::endl
 				<< "\tempty:                 " << o.empty()									<< std::endl
 				<< "\tbool:                  " << o.operator bool()							<< std::endl
-				<< "\tstr:                   " << o.str()										<< std::endl
+				<< "\tstr:                   " << o.to_str()									<< std::endl
 				<< "\tstd::string:           " << std::string(o)								<< std::endl
 				<< "\tisChild:               " << o.isChildOf( "1.2.3.4" )						<< std::endl
 				<< "\tisParent:              " << o.isParentOf( "1.2.3.4.5.6.7.8" )				<< std::endl
@@ -122,12 +122,13 @@ void checkConstness( void )
 				<< "\timmediateParent:       " << o.isImmediateParentOf( "1.2.3.4.5.6.7")		<< std::endl
 				<< "\tconst unsigned long *: " << o.operator const unsigned long *()			<< std::endl
 				<< "\tconst unsigned char *: " << (void*)o.operator const unsigned char *()		<< std::endl
-				<< "\t==:                    " << (o == ".1.2.3.4.5.6")						<< std::endl
+				<< "\t==:                    " << (o == SNMPpp::OID(".1.2.3.4.5.6"))			<< std::endl
 				<< "\t+:                     " << (o + std::string(".7"))						<< std::endl
-				<< "\t<:                     " << (o < ".9.8.7")								<< std::endl
-				<< "\t>:                     " << (o > ".0.1.2")								<< std::endl
-				<< "\t<=:                    " << (o <= ".9.8.7")								<< std::endl
-				<< "\t>=:                    " << (o >= ".0.1.2")								<< std::endl;
+                /// @todo Why do I have to explicitely reference operator...() for this to compile in Windows?
+				<< "\t<:                     " << (o.operator<(".9.8.7"))						<< std::endl
+				<< "\t>:                     " << (o.operator>(".0.1.2"))						<< std::endl
+				<< "\t<=:                    " << (o.operator<=(".9.8.7"))						<< std::endl
+				<< "\t>=:                    " << (o.operator>=(".0.1.2"))						<< std::endl;
 
 	return;
 }

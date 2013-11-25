@@ -41,9 +41,10 @@ int main( int argc, char *argv[] )
 	SNMPpp::OID o( ".1.3.6.1.4.1.38322" );
 
 	std::cout << std::endl;
-	if ( o[2] == 6 ) std::cout << "\to[2]==3 is TRUE for " << o << std::endl;
-	if ( o[2] != 7 ) std::cout << "\to[2]==4 is FALSE for " << o << std::endl;
-	std::cout << "\to[6]==" << o[6] << std::endl;
+	if ( o.operator[](2) == 6 ) std::cout << "\to[2]==6 is TRUE for " << o << std::endl;
+	if ( o.operator[](2) != 7 ) std::cout << "\to[2]==7 is FALSE for " << o << std::endl;
+    /// @todo Why do I have to explicitely reference operator[]() for this to compile in Windows?
+	std::cout << "\to[6]==" << o.operator[](6) << std::endl;
 
 	const struct tree * tree = o.getTree();
 
@@ -55,13 +56,13 @@ int main( int argc, char *argv[] )
 	{
 		std::cout	<< "\ttree->modid="			<< tree->modid										<< std::endl
 					<< "\ttree->label="			<< (tree->label			? tree->label		: "" )	<< std::endl
-					<< "\ttree->parent="			<< (tree->parent			? tree->parent		:NULL)	<< std::endl
-					<< "\ttree->augments="		<< (tree->augments		? tree->augments		: "" )	<< std::endl
-					<< "\ttree->hints="			<< (tree->hint			? tree->hint			: "" )	<< std::endl
+					<< "\ttree->parent="		<< (tree->parent		? tree->parent		:NULL)	<< std::endl
+					<< "\ttree->augments="		<< (tree->augments		? tree->augments	: "" )	<< std::endl
+					<< "\ttree->hints="			<< (tree->hint			? tree->hint		: "" )	<< std::endl
 					<< "\ttree->units="			<< (tree->units			? tree->units		: "" )	<< std::endl
-					<< "\ttree->description="		<< (tree->description	? tree->description	: "" )	<< std::endl
+					<< "\ttree->description="	<< (tree->description	? tree->description	: "" )	<< std::endl
 					<< "\ttree->reference="		<< (tree->reference		? tree->reference	: "" )	<< std::endl
-					<< "\ttree->defaultValue="	<< (tree->defaultValue	? tree->defaultValue	: "" )	<< std::endl;
+					<< "\ttree->defaultValue="	<< (tree->defaultValue	? tree->defaultValue: "" )	<< std::endl;
 	}
 
 	const struct module *module = o.getModule();

@@ -69,7 +69,11 @@ namespace SNMPpp
 	/** Return the uptime in centiseconds.
 	 * @param[in] pid If set to zero then the current process ID will be
 	 * queried by calling getpid().
+     * @todo Not supported in Windows; returns centisecondsUptime() instead.
 	 */
+#if defined WIN32 && ! defined pid_t
+    typedef int pid_t;
+#endif
 	long centisecondsPidStarted( pid_t pid = 0 );
 
 	/** Return the number of centiseconds since the last reboot.

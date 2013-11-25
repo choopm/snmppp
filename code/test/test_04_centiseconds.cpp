@@ -3,18 +3,20 @@
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
 #include <time.h>
-#include <unistd.h>
 #include <iostream>
 #include <assert.h>
 #include <SNMPpp/Trap.hpp>
-
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 void checkCentiseconds( const time_t t )
 {
-	std::cout	<< "Uptime:   "					<< SNMPpp::centisecondsUptime()			<< std::endl
-				<< "Since:    "					<< SNMPpp::centisecondsSince( t )			<< std::endl
-				<< "Net-snmp: "					<< SNMPpp::centisecondsNetSnmpUptime()	<< std::endl
-				<< "Pid " << getpid() << ": "		<< SNMPpp::centisecondsPidStarted()		<< std::endl;
+    std::cout
+        << "Uptime:   " << SNMPpp::centisecondsUptime()        << std::endl
+        << "Since:    " << SNMPpp::centisecondsSince( t )      << std::endl
+        << "Net-snmp: " << SNMPpp::centisecondsNetSnmpUptime() << std::endl
+        << "Pid:      " << SNMPpp::centisecondsPidStarted()    << std::endl;
 
 	return;
 }
@@ -40,7 +42,11 @@ int main( int argc, char *argv[] )
 	assert( l4 < 2 );
 
 	std::cout << "...pause 1 second..." << std::endl;
-	sleep( 1 );
+#ifdef WIN32
+    Sleep( 1000 ); // milliseconds
+#else
+    sleep( 1 ); // seconds
+#endif
 
 	const long l5 = SNMPpp::centisecondsUptime();
 	const long l6 = SNMPpp::centisecondsSince( t );

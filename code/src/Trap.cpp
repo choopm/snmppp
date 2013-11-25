@@ -4,11 +4,16 @@
 
 #include <SNMPpp/Trap.hpp>
 #include <sys/stat.h>
-#include <sys/sysinfo.h>
-#include <unistd.h>
 #include <stdexcept>
 #include <sstream>
 #include <iostream>
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#else
+#include <sys/sysinfo.h>
+#include <unistd.h>
+#endif
 
 
 void SNMPpp::initializeNetSnmpAgent( const std::string &name )
@@ -78,12 +83,16 @@ long SNMPpp::centisecondsSince( const time_t t )
 	 * given time.  If the specified time is in the future, then `zero` is
 	 * returned.
 	 */
-	return 100L * ( now - t );
+	return long( 100L * ( now - t ) );
 }
 
 
 long SNMPpp::centisecondsPidStarted( pid_t pid )
 {
+#ifdef WIN32
+    /// @todo This is beyond my limited Windows skills, so return something simpler.
+    return centisecondsUptime();
+#else
 	// Return the number of centiseconds (1/100s) since the given PID was
 	// started.  If PID==0 or the PID uptime is unavailable, then net-snmp's
 	// uptime will be returned instead.
@@ -109,6 +118,7 @@ long SNMPpp::centisecondsPidStarted( pid_t pid )
 	 * centiseconds (1/100s) since the given PID was started.
 	*/
 	return centisecondsSince( buf.st_ctime );
+#endif
 }
 
 
@@ -141,10 +151,18 @@ long SNMPpp::centisecondsUptime( void )
 {
 	// Return the number of centiseconds (1/100s) since the last reboot.
 
-	struct sysinfo s = {0};
-	sysinfo( &s );
+#ifdef WIN32
+    /// @todo GetTickCount() wraps after 7 weeks -- look into using something else, such as GetTickCount64()?
+    DWORD uptime = GetTickCount();
+    // ULONGLONG uptime = GetTickCount64();
 
+    // remember to convert the time from milliseconds to centiseconds
+    return uptime/10;
+#else
+	struct sysinfo s = {0};
+	sysinfo( &s ); // uptime is in seconds, so we need to multiply by 100 to get centiseconds
 	return 100L * s.uptime;
+#endif
 }
 
 

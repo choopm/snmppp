@@ -2,8 +2,8 @@
 // SNMPpp project uses the MIT license. See LICENSE for details.
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
-#include <SNMPpp/Varlist.hpp>
 #include <stdexcept>
+#include <SNMPpp/Varlist.hpp>
 
 
 SNMPpp::Varlist::~Varlist( void )
@@ -109,7 +109,7 @@ SNMPpp::Varlist &SNMPpp::Varlist::addNullVar( const SNMPpp::OID &o )
 	if ( p == NULL )
 	{
 		/// @throw std::runtime_error if net-snmp failed to add the OID.
-		throw std::runtime_error( "Failed to add " + o.str() + " to the variable list." );
+		throw std::runtime_error( "Failed to add " + o.to_str() + " to the variable list." );
 	}
 
 	return *this;
@@ -156,7 +156,7 @@ const netsnmp_variable_list *SNMPpp::Varlist::at( const SNMPpp::OID &o ) const
 	if ( p == NULL )
 	{
 		/// @throw std::invalid_argument if the varlist does not contain the requested OID.
-		throw std::invalid_argument( "Varlist does not contain OID " + o.str() + "." );
+		throw std::invalid_argument( "Varlist does not contain OID " + o.to_str() + "." );
 	}
 
 	return p;
@@ -201,7 +201,7 @@ bool SNMPpp::Varlist::getBool( const SNMPpp::OID &o ) const
 	if ( vl->type != ASN_BOOLEAN )
 	{
 		/// @throw std::invalid_argument if the requested OID is not `ASN_BOOLEAN`.
-		throw std::invalid_argument( "OID " + o.str() + " is not a boolean type." );
+		throw std::invalid_argument( "OID " + o.to_str() + " is not a boolean type." );
 	}
 
 	return *vl->val.integer == 1; // rfc1212, true=1, false=2
@@ -215,7 +215,7 @@ long	 SNMPpp::Varlist::getLong( const SNMPpp::OID &o ) const
 	if ( vl->type != ASN_INTEGER )
 	{
 		/// @throw std::invalid_argument if the requested OID is not `ASN_INTEGER`.
-		throw std::invalid_argument( "OID " + o.str() + " is not a numeric type." );
+		throw std::invalid_argument( "OID " + o.to_str() + " is not a numeric type." );
 	}
 
 	return *vl->val.integer;
@@ -229,7 +229,7 @@ std::string SNMPpp::Varlist::getString( const SNMPpp::OID &o ) const
 	if ( vl->type != ASN_OCTET_STR )
 	{
 		/// @throw std::invalid_argument if the requested OID is not `ASN_OCTET_STR`.
-		throw std::invalid_argument( "OID " + o.str() + " is not a string." );
+		throw std::invalid_argument( "OID " + o.to_str() + " is not a string." );
 	}
 
 	return std::string( (const char *)vl->val.string, vl->val_len );
@@ -243,7 +243,7 @@ SNMPpp::OID SNMPpp::Varlist::getOID( const SNMPpp::OID &o ) const
 	if ( vl->type != ASN_OBJECT_ID )
 	{
 		/// @throw std::invalid_argument if the requested OID is not `ASN_OBJECT_ID`.
-		throw std::invalid_argument( "OID " + o.str() + " is not a OID." );
+		throw std::invalid_argument( "OID " + o.to_str() + " is not a OID." );
 	}
 	
 	return SNMPpp::OID( vl->val.objid, vl->val_len/sizeof(unsigned long) );

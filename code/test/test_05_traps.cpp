@@ -24,7 +24,7 @@ int main( int argc, char *argv[] )
 
 		assert( false ); // we should never get here since sendV2Trap() will throw a C++ exception
 	}
-	catch ( const std::runtime_error &e )
+	catch ( const std::runtime_error &/*e*/ )
 	{
 		// do nothing, we expected sendV2Trap() to fail
 	}

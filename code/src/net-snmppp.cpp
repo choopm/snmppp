@@ -2,6 +2,7 @@
 // SNMPpp project uses the MIT license. See LICENSE for details.
 // Copyright (C) 2013 Stephane Charette <stephanecharette@gmail.com>
 
+#include <stdexcept>
 #include <SNMPpp/net-snmppp.hpp>
 
 
@@ -17,7 +18,10 @@ void SNMPpp::netsnmpLogStdErr( const bool enabled )
 {
 	if ( enabled )
 	{
-		init_snmp_logging();
+#ifndef WIN32
+        /// @todo Why is this an unresolved external in Windows?
+        init_snmp_logging();
+#endif
 		snmp_enable_stderrlog();
 	}
 	else
@@ -33,12 +37,15 @@ void SNMPpp::netsnmpLogSyslog( const bool enabled )
 {
 	if ( enabled )
 	{
-		init_snmp_logging();
+#ifndef WIN32
+        /// @todo Why is this an unresolved external in Windows?
+        init_snmp_logging( );
+#endif
 		snmp_enable_syslog();
 	}
 	else
 	{
-		snmp_disable_syslog();
+        snmp_disable_syslog();
 	}
 
 	return;
@@ -54,12 +61,18 @@ void SNMPpp::netsnmpLogToFile( const bool enabled, const std::string &filename )
 
 	if ( enabled && ! filename.empty() )
 	{
-		init_snmp_logging();
+#ifndef WIN32
+        /// @todo Why is this an unresolved external in Windows?
+        init_snmp_logging( );
+#endif
 		snmp_enable_filelog( filename.c_str(), 1 ); // 0 overwrites, 1 appends
 	}
 	else
 	{
-		snmp_disable_filelog();
+#ifndef WIN32
+        /// @todo Why is this an unresolved external in Windows?
+        snmp_disable_filelog();
+#endif
 	}
 
 	return;
