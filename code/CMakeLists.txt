@@ -36,7 +36,7 @@ IF ( UNIX )
     SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable"             ) # some asserts aren't used in non-debug mode, so don't complain about unused vars
     SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter"            ) # especially in C++, sometimes parms aren't used in derived classes
     SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic"                            ) # position-independent code is necessary for a library
-#   SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11"                     ) # C++11 not required to compile SNMPpp
+    SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11"                     ) # C++11 so far is just used in a few std::to_string() which should be easy to remove if necessary
 ELSE ()
     INCLUDE_DIRECTORIES ( AFTER /usr/include )
     ADD_DEFINITIONS ( -D_CRT_SECURE_NO_WARNINGS )
