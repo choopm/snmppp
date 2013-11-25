@@ -6,4 +6,6 @@
 
 build
 code/include/SNMPpp/Version.hpp
+upload_doxygen.sh
+sf_shell.sh
 
