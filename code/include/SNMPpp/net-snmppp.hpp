@@ -9,15 +9,12 @@
  * net-snmppp.hpp.  No other SNMPpp source files should have to include
  * additional net-snmp headers to compile SNMPpp.
  */
-#include <stdlib.h> // needed by net-snmp/utilities.h
+
 #include <net-snmp/net-snmp-config.h>
-#include <net-snmp/config_api.h>
-#include <net-snmp/output_api.h>
-#include <net-snmp/session_api.h>
-#include <net-snmp/varbind_api.h>
-#include <net-snmp/mib_api.h>
-#include <net-snmp/pdu_api.h>
-#include <net-snmp/utilities.h>
+#include <net-snmp/net-snmp-includes.h>
+#include <net-snmp/library/snmpv3.h>
+#include <net-snmp/library/snmpusm.h>
+
 #include <net-snmp/agent/agent_trap.h>
 #include <net-snmp/agent/snmp_agent.h>
 #include <net-snmp/agent/snmp_vars.h>

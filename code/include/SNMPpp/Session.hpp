@@ -30,6 +30,7 @@ namespace SNMPpp
      * - This will throw if something goes wrong when setting up the session.
      */
     void openSession( SessionHandle &sessionHandle, const std::string &server = "udp:127.0.0.1:161", const std::string &community = "public", const int version = SNMP_VERSION_2c, const int retryAttempts = 3 );
+    void openSessionV3( SessionHandle &sessionHandle, const std::string &server = "udp:127.0.0.1:161", const std::string &authUser = "guest", const std::string &authPassword = "", const std::string &privPassword = "", const std::string &secLevel = "authPriv", const std::string &authProtocol = "SHA1", const std::string &privProtocol = "AES", const int retryAttempts = 3 );
 
     /** Sessions must be closed when no longer needed.  This can be done by
      * calling `snmp_sess_close()` directly, or SNMPpp::closeSession().
