@@ -10,6 +10,7 @@
 
 void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::string &server, const std::string &community, const int version, const int retryAttempts )
 {
+    std::lock_guard<std::mutex> lock(mtxOpenSession);
     // make sure you call closeSession() to free up the handle before calling
     // openSession() because we're about to overwrite any previous handles
     sessionHandle = NULL;
@@ -54,7 +55,8 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::strin
 }
 
  void SNMPpp::openSessionV3( SessionHandle &sessionHandle, const std::string &server, const std::string &authUser, const std::string &authPassword, const std::string &privPassword, const std::string &secLevel, const std::string &authProtocol, const std::string &privProtocol, const int retryAttempts )
- {
+{
+    std::lock_guard<std::mutex> lock(mtxOpenSession);
     // make sure you call closeSession() to free up the handle before calling
     // openSession() because we're about to overwrite any previous handles
 

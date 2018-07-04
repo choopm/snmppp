@@ -5,6 +5,7 @@
 #pragma once
 
 #include <SNMPpp/net-snmppp.hpp>
+#include <mutex>
 #include <string>
 
 
@@ -18,6 +19,11 @@ namespace SNMPpp
      * @see SNMPpp::closeSession();
      */
     typedef void * SessionHandle;
+
+    // net-snmp itself is thread-safe as long as all initializations and config parsing is synchronized (mainly init_* and snmp_*open calls).
+    // One shall use the "Single API" (*_sess_* variants) when using net-snmp in a threaded environment, this is default in SNMPpp.
+    // As a result of this we use a std::lock_guard to synchronize calls to openSession/openSessionV3 to protect net-snmp from corruption
+    static std::mutex mtxOpenSession;
 
     /** Open a net-snmp session and return a session handle.  The session
      * handle will be needed for all other net-snmp calls.  Any previous value
