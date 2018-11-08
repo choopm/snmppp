@@ -8,7 +8,7 @@
 #include <SNMPpp/Session.hpp>
 
 
-void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::string &server, const std::string &community, const int version, const int retryAttempts )
+void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::string &server, const std::string &community, const int version, const int retryAttempts, const int timeout )
 {
     std::lock_guard<std::mutex> lock(mtxOpenSession);
     // make sure you call closeSession() to free up the handle before calling
@@ -20,6 +20,7 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::strin
 
     session.version         = version;
     session.retries         = retryAttempts;
+    session.timeout         = timeout;
     session.peername        = (char*)server.c_str();
     session.community       = (unsigned char*)community.c_str();
     session.community_len   = community.size();
@@ -54,7 +55,7 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::strin
     return;
 }
 
- void SNMPpp::openSessionV3( SessionHandle &sessionHandle, const std::string &server, const std::string &authUser, const std::string &authPassword, const std::string &privPassword, const std::string &secLevel, const std::string &authProtocol, const std::string &privProtocol, const int retryAttempts )
+ void SNMPpp::openSessionV3( SessionHandle &sessionHandle, const std::string &server, const std::string &authUser, const std::string &authPassword, const std::string &privPassword, const std::string &secLevel, const std::string &authProtocol, const std::string &privProtocol, const int retryAttempts, const int timeout )
 {
     std::lock_guard<std::mutex> lock(mtxOpenSession);
     // make sure you call closeSession() to free up the handle before calling
@@ -75,6 +76,7 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::strin
 
     session.version = SNMP_VERSION_3;
     session.retries = retryAttempts;
+    session.timeout = timeout;
     session.peername = (char *) server.c_str();
 
 //     session.contextName = strdup("");
