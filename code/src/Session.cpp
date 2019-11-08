@@ -122,7 +122,8 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::strin
     }
     session.securityPrivKeyLen = USM_PRIV_KU_LEN;
 
-    if (generate_Ku(session.securityAuthProto,
+    if ( (secLevel == "authPriv" || secLevel == "authNoPriv") &&
+        generate_Ku(session.securityAuthProto,
                     session.securityAuthProtoLen,
                     (u_char *) authPassword.c_str(),
                     authPassword.size(),
@@ -131,7 +132,8 @@ void SNMPpp::openSession( SNMPpp::SessionHandle &sessionHandle, const std::strin
         throw std::runtime_error("Error generating Ku from authentication pass phrase");
     }
 
-    if (generate_Ku(session.securityAuthProto,
+    if (secLevel == "authPriv" &&
+        generate_Ku(session.securityAuthProto,
                     session.securityAuthProtoLen,
                     (u_char *) privPassword.c_str(),
                     privPassword.size(),
