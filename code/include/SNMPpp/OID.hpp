@@ -15,7 +15,7 @@
 namespace SNMPpp
 {
     /** Wrapper for net-snmp's OID arrays.
-     * 
+     *
      * These objects are extremely small (just a std::vector) and can easily
      * be created on the stack or as a member of another class.
      *

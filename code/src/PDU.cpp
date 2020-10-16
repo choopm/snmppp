@@ -209,6 +209,126 @@ SNMPpp::OID SNMPpp::PDU::firstOID( void ) const
 }
 
 
+SNMPpp::PDU &SNMPpp::PDU::addBooleanVar( const SNMPpp::OID &o, bool value )
+{
+    if ( pdu == NULL )
+    {
+        /// @throw std::logic_error if the PDU is NULL.
+        throw std::logic_error( "Cannot reference a NULL PDU." );
+    }
+
+    if ( pdu->variables == NULL )
+    {
+        // if the PDU doesn't have a varlist, create a new one
+        SNMPpp::Varlist vl;
+        vl.addBooleanVar( o, value );
+        setVarlist( vl );
+    }
+    else
+    {
+        // ...otherwise, add to the existing varlist
+        varlist().addBooleanVar( o, value );
+    }
+
+    return *this;
+}
+
+SNMPpp::PDU &SNMPpp::PDU::addIntegerVar( const SNMPpp::OID &o, int value )
+{
+    if ( pdu == NULL )
+    {
+        /// @throw std::logic_error if the PDU is NULL.
+        throw std::logic_error( "Cannot reference a NULL PDU." );
+    }
+
+    if ( pdu->variables == NULL )
+    {
+        // if the PDU doesn't have a varlist, create a new one
+        SNMPpp::Varlist vl;
+        vl.addIntegerVar( o, value );
+        setVarlist( vl );
+    }
+    else
+    {
+        // ...otherwise, add to the existing varlist
+        varlist().addIntegerVar( o, value );
+    }
+
+    return *this;
+}
+
+SNMPpp::PDU &SNMPpp::PDU::addInteger64Var( const SNMPpp::OID &o, long value )
+{
+    if ( pdu == NULL )
+    {
+        /// @throw std::logic_error if the PDU is NULL.
+        throw std::logic_error( "Cannot reference a NULL PDU." );
+    }
+
+    if ( pdu->variables == NULL )
+    {
+        // if the PDU doesn't have a varlist, create a new one
+        SNMPpp::Varlist vl;
+        vl.addInteger64Var( o, value );
+        setVarlist( vl );
+    }
+    else
+    {
+        // ...otherwise, add to the existing varlist
+        varlist().addInteger64Var( o, value );
+    }
+
+    return *this;
+}
+
+SNMPpp::PDU &SNMPpp::PDU::addGaugeVar( const SNMPpp::OID &o, unsigned int value )
+{
+    if ( pdu == NULL )
+    {
+        /// @throw std::logic_error if the PDU is NULL.
+        throw std::logic_error( "Cannot reference a NULL PDU." );
+    }
+
+    if ( pdu->variables == NULL )
+    {
+        // if the PDU doesn't have a varlist, create a new one
+        SNMPpp::Varlist vl;
+        vl.addGaugeVar( o, value );
+        setVarlist( vl );
+    }
+    else
+    {
+        // ...otherwise, add to the existing varlist
+        varlist().addGaugeVar( o, value );
+    }
+
+    return *this;
+}
+
+SNMPpp::PDU &SNMPpp::PDU::addOctetStringVar( const SNMPpp::OID &o, unsigned char * value, long unsigned int size )
+{
+    if ( pdu == NULL )
+    {
+        /// @throw std::logic_error if the PDU is NULL.
+        throw std::logic_error( "Cannot reference a NULL PDU." );
+    }
+
+    if ( pdu->variables == NULL )
+    {
+        // if the PDU doesn't have a varlist, create a new one
+        SNMPpp::Varlist vl;
+        vl.addOctetStringVar( o, value, size );
+        setVarlist( vl );
+    }
+    else
+    {
+        // ...otherwise, add to the existing varlist
+        varlist().addOctetStringVar( o, value, size );
+    }
+
+    return *this;
+}
+
 SNMPpp::PDU &SNMPpp::PDU::addNullVar( const SNMPpp::OID &o )
 {
     if ( pdu == NULL )
