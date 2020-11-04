@@ -14,7 +14,7 @@
 namespace SNMPpp
 {
     /** Wrapper for net-snmp's PDU structures.
-     * 
+     *
      * These objects are extremely small (just a pointer) and can easily
      * be created on the stack or as a member of another class.
      *
@@ -119,6 +119,21 @@ namespace SNMPpp
             /// Return the first OID object in the variable list.
             virtual SNMPpp::OID firstOID( void ) const;
 
+            /// Add an OID as ASN_BOOLEAN to the variable list.
+            virtual PDU &addBooleanVar( const SNMPpp::OID &o, bool value );
+
+            /// Add an OID as ASN_INTEGER to the variable list.
+            virtual PDU &addIntegerVar( const SNMPpp::OID &o, int value );
+
+            /// Add an OID as ASN_INTEGER64 to the variable list.
+            virtual PDU &addInteger64Var( const SNMPpp::OID &o, long value );
+
+            /// Add an OID as ASN_GAUGE to the variable list.
+            virtual PDU &addGaugeVar( const SNMPpp::OID &o, unsigned int value );
+
+            /// Add an OID as ASN_OCTET_STR to the variable list.
+            virtual PDU &addOctetStringVar( const SNMPpp::OID &o, unsigned char * value, long unsigned int size );
+
             /// Add an OID as ASN_NULL to the variable list.
             virtual PDU &addNullVar( const SNMPpp::OID &o );
 
@@ -135,7 +150,6 @@ namespace SNMPpp
             virtual PDU &addNullVars( const SNMPpp::VecOID &v );
 
         protected:
-
             EType type;
             netsnmp_pdu *pdu; // beware -- this pointer *can* be null if a PDU hasn't been defined or if it has been clear()
     };

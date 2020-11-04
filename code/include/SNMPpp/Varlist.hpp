@@ -98,6 +98,16 @@ namespace SNMPpp
             /// See if the given OID is in the varlist.
             virtual bool contains( const SNMPpp::OID &o ) const;
 
+            virtual Varlist &addBooleanVar( const SNMPpp::OID &o, bool value );
+
+            virtual Varlist &addIntegerVar( const SNMPpp::OID &o, int value );
+
+            virtual Varlist &addInteger64Var( const SNMPpp::OID &o, long value );
+
+            virtual Varlist &addGaugeVar( const SNMPpp::OID &o, unsigned int value );
+
+            virtual Varlist &addOctetStringVar( const SNMPpp::OID &o, unsigned char * value, long unsigned int size );
+
             /** Equivalent to snmp_add_null_var() which adds a placeholder in
              * the PDU for this OID.  The "null" refers to how a type and value
              * value aren't specified, just the OID.  This is typically used
@@ -244,7 +254,7 @@ namespace SNMPpp
              * but if the varlist contains multiple objects, assumes only the
              * first one is of interest.
              * @see SNMPpp::Varlist::getOID( const SNMPpp::OID &o ) const
-             * @see SNMPpp::Varlist::asString( void ) const 
+             * @see SNMPpp::Varlist::asString( void ) const
              */
             virtual SNMPpp::OID getOID( void ) const { return getOID( firstOID() ); }
 

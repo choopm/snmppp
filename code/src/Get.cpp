@@ -40,8 +40,8 @@ SNMPpp::PDU SNMPpp::sync( SNMPpp::SessionHandle &session, SNMPpp::PDU &request )
         snmp_sess_error( session, &error1, &error2, &msg );
         std::stringstream ss;
         ss  << "Failed to get. ["
-            << "e1=" << error1 << ", "
-            << "e2=" << error2;
+            << "cliberrno=" << error1 << ", "
+            << "snmperrno=" << error2;
         if ( msg != NULL && msg[0] != '\0' )
         {
             ss << ", " << msg;

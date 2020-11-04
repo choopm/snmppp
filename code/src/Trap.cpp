@@ -38,8 +38,8 @@ void SNMPpp::initializeNetSnmpAgent( const std::string &name )
         std::stringstream ss;
         ss  << "Failed to initialize the SNMP agent for \"" << name << "\". ["
             << "rc=" << rc      << ", "
-            << "e1=" << error1  << ", "
-            << "e2=" << error2;
+            << "cliberrno=" << error1  << ", "
+            << "snmperrno=" << error2;
         if ( msg != NULL && msg[0] != '\0' )
         {
             ss << ", " << msg;
